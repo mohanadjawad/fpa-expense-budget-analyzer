@@ -1,0 +1,18 @@
+# Editor / tool folders
+.claude/
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local working files (projects and exports may contain real financial data)
+*.bak
+*.tmp
+FPA_Budget_Project*.json
+FPA_Financial_Budget_And_Breach_Report*.xlsx
+Over_Budget_Expenses_Annual_And_Monthly*.xlsx
+Next_Year_Budget_Proposal*.xlsx
+Template_*.xlsx

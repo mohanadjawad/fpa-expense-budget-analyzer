@@ -1,0 +1,18 @@
+Date,Account Number,Account Name,Voucher No,Description,Amount,Department,Category
+2026-01-12,5204,Equipment Maintenance,INV-101,الصيانة الدورية للمولدات الرئيسية,5200,Operations,Maintenance
+2026-01-24,5204,Equipment Maintenance,INV-115,استبدال مرشحات وزيوت المحركات,2400,Operations,Maintenance
+2026-01-28,5101,Salaries & Wages,PAY-01,رواتب الموظفين لشهر يناير,39500,HR,Payroll
+2026-02-10,5204,Equipment Maintenance,INV-204,صيانة خطوط الإنتاج - الدفعة الأولى,6000,Operations,Maintenance
+2026-02-19,5204,Equipment Maintenance,INV-219,توريد قطع غيار طارئة للمضخات الهيدروليكية,4500,Operations,Maintenance
+2026-02-26,5204,Equipment Maintenance,INV-233,أتعاب الفرق الفنية لإصلاح الأعطال الطارئة,2200,Operations,Maintenance
+2026-02-28,5101,Salaries & Wages,PAY-02,رواتب الموظفين لشهر فبراير,39800,HR,Payroll
+2026-03-05,5302,IT & Cloud Licenses,IT-029,اشتراك الخوادم السحابية لشهر مارس,5000,IT,Software
+2026-03-19,5302,IT & Cloud Licenses,IT-035,تراخيص أنظمة الحماية والأمن السيبراني الإضافية,6200,IT,Software
+2026-04-12,5999,Unbudgeted Charges,INV-991,رسوم تخليص ومناولة استثنائية للشحنات المستوردة,14500,Administration,Other
+2026-05-15,5204,Equipment Maintenance,INV-511,إصلاح شامل للمولد الكهربائي الاحتياطي,14500,Operations,Maintenance
+2026-06-18,5204,Equipment Maintenance,INV-608,تحديث لوحة التحكم الكهربائية الرئيسية,11200,Operations,Maintenance
+2026-07-11,5204,Equipment Maintenance,INV-705,صيانة وحدات التبريد الصناعية,9500,Operations,Maintenance
+2026-07-25,5204,Equipment Maintenance,INV-740,توريد وتركيب ضاغط هواء صناعي,6800,Operations,Maintenance
+2026-08-09,5204,Equipment Maintenance,INV-812,أعمال الصيانة الوقائية لشهر أغسطس,12000,Operations,Maintenance
+2026-08-22,5204,Equipment Maintenance,INV-855,إعادة تأهيل المحول الكهربائي الرئيسي,9500,Operations,Maintenance
+2026-09-14,5204,Equipment Maintenance,INV-910,توريد قطع غيار ميكانيكية لخطوط التشغيل,11000,Operations,Maintenance
