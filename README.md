@@ -4,6 +4,10 @@
 
 ![100% Offline](https://img.shields.io/badge/100%25-Offline-2ea44f) ![No install](https://img.shields.io/badge/install-none-blue) ![Single file](https://img.shields.io/badge/single%20HTML%20file-~1.2%20MB-informational) ![Languages](https://img.shields.io/badge/UI-English%20%7C%20العربية-orange) ![Scope](https://img.shields.io/badge/scope-expenses%20only-yellow)
 
+### ▶️ [Live demo — open the tool in your browser](https://mohanadjawad.github.io/fpa-expense-budget-analyzer/)
+
+The live demo runs entirely in your browser, exactly like the downloaded file: any file you upload is processed on your own device and is never sent to a server. For daily or confidential use, download the single HTML file and run it offline.
+
 > **Scope: expense (OPEX) accounts only.** Spending above budget is treated as an unfavorable overrun and spending below budget as a saving. Do not use it for revenue accounts, where exceeding budget is favorable and results would read in reverse.
 
 [العربية ↓](#بالعربية)
@@ -103,6 +107,7 @@ HTML5, CSS3 and vanilla JavaScript — no framework, no build step, no backend. 
 - **ملف واحد يعمل بالكامل داخل المتصفح بدون إنترنت:** لا يحتاج تنصيب أي برنامج ولا صلاحيات مسؤول ولا خادم، ومكتبة Excel مضمّنة داخله.
 - **بياناتك المالية لا تغادر جهازك:** لا يتم رفع أو إرسال أي ملف أو رقم.
 - **طريقة التشغيل:** حمّل ملف `FPA_Budget_And_GL_Analyzer.html` وافتحه بنقرة مزدوجة. الواجهة تبدأ بالإنجليزية ويمكن التحويل إلى العربية من زر اللغة.
+- **تجربة مباشرة من المتصفح:** [افتح الأداة أونلاين](https://mohanadjawad.github.io/fpa-expense-budget-analyzer/) — تعمل بنفس الطريقة داخل متصفحك، وأي ملف ترفعه يُعالج على جهازك ولا يُرسل لأي خادم.
 - **أهم الخصائص:** مقارنة YTD، التوقع الكامل للسنة (EAC)، حد الأهمية النسبية بالاتجاهين، اعتماد وتجميد نسخ التوقعات، مؤشرات الفحص التحليلي (القيود المكررة، تجزئة الفواتير، تركز نهاية الشهر، القيود بدون مرجع)، سجل كامل للتعديلات، وتقرير Excel من 6 أوراق بلغة الواجهة.
 - **النطاق:** حسابات المصروفات فقط؛ لا تُستخدم لحسابات الإيرادات.
 
