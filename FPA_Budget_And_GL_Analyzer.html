@@ -64,6 +64,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Reserve the scrollbar space so the layout width does not change when a page becomes scrollable */
+    html { scrollbar-gutter: stable; }
 
     body {
       font-family: 'Segoe UI', Tahoma, system-ui, -apple-system, sans-serif;
@@ -344,7 +346,46 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       font-size: 12.5px; font-weight: 600; display: none; align-items: center; gap: 10px;
     }
 
-    /* ---------- Navigation: all six tabs always visible on desktop/tablet ---------- */
+    /* ---------- Management dashboard tab ---------- */
+    .ov-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+    .ov-title { font-size: 18px; font-weight: 800; color: var(--text); }
+    .ov-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .ov-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .ov-filters .form-group { min-width: 150px; }
+    .ov-filters .form-group > span { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .ov-card {
+      position: relative; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 16px; min-width: 0;
+    }
+    .ov-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; align-items: start; }
+    .ov-grid2 > .ov-card, .ov-grid-a > .ov-card { margin-bottom: 0; }
+    .ov-grid-a { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-bottom: 16px; align-items: start; }
+    @media (min-width: 1200px) { .ov-grid-a { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+    .ov-svg { min-height: 40px; }
+    .ov-svg svg { display: block; max-width: 100%; height: auto; }
+    .ov-actions { position: absolute; top: 10px; inset-inline-end: 10px; display: flex; gap: 4px; z-index: 2; }
+    .ov-act {
+      width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text-muted);
+      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .ov-act:hover, .ov-act:focus-visible { color: var(--primary); border-color: var(--primary); background: var(--primary-light); outline: none; }
+    .ov-card-title { font-size: 15px; font-weight: 700; color: var(--text); padding-inline-end: 44px; }
+    .ov-card-sub { font-size: 12px; color: var(--text-muted); margin: 3px 0 12px; }
+    .ov-table-wrap { overflow-x: auto; }
+    .ov-table thead th { position: static; white-space: nowrap; }
+    .ov-table tbody td { vertical-align: top; }
+    .ov-table td:nth-child(2), .ov-table td:nth-child(3) { font-variant-numeric: tabular-nums; }
+    .ov-empty, .ov-empty-row { text-align: center; color: var(--text-muted); padding: 28px 12px; }
+    @media (max-width: 1000px) { .ov-grid2 { grid-template-columns: minmax(0, 1fr); } }
+    @media (max-width: 768px) {
+      .ov-card { padding: 12px; }
+      .ov-filters { width: 100%; }
+      .ov-filters .form-group { flex: 1 1 140px; min-width: 0; }
+      .ov-table tbody td { white-space: normal; }
+    }
+
+    /* ---------- Navigation: all tabs always visible on desktop/tablet ---------- */
     @media (min-width: 769px) {
       .nav-bar { flex-wrap: wrap; overflow-x: visible; row-gap: 0; }
     }
@@ -451,6 +492,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
   <nav class="nav-bar">
     <button class="nav-tab active" data-tab="tab-upload" onclick="switchTab('tab-upload')" data-tip="tip_nav_upload">
       <span data-i18n="nav_upload">إدخال واستيراد البيانات</span>
+    </button>
+    <button class="nav-tab" data-tab="tab-overview" onclick="switchTab('tab-overview')" data-tip="tip_nav_overview">
+      <span data-i18n="nav_overview">لوحة المؤشرات</span>
     </button>
     <button class="nav-tab" data-tab="tab-dashboard" onclick="switchTab('tab-dashboard')" data-tip="tip_nav_summary">
       <span data-i18n="nav_summary">ملخص الحسابات ونسب الأداء</span>
@@ -678,6 +722,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         </div>
       </div>
     </section>
+
+    <!-- ==========================================
+         DASHBOARD: KPIs, CHARTS & MATERIAL VARIANCES (drawn by renderOverview)
+    =========================================== -->
+    <section id="tab-overview" class="tab-section"></section>
 
     <!-- ==========================================
          TAB 2: ACCOUNT SUMMARY, COMMITMENTS, MATERIALITY & VARIANCE %
@@ -1271,6 +1320,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         btn_save_json: 'حفظ المشروع',
         btn_load_json: 'فتح مشروع',
         nav_upload: 'إدخال واستيراد البيانات',
+        nav_overview: 'لوحة المؤشرات',
         nav_summary: 'ملخص الحسابات ونسب الأداء',
         nav_reforecast: 'تحديثات الميزانية (3+9 / 6+6 / 9+3)',
         nav_monthly_breach: 'تحليل التجاوزات الشهرية',
@@ -1469,6 +1519,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         btn_save_json: 'Save Project',
         btn_load_json: 'Open Project',
         nav_upload: 'Data Import & Setup',
+        nav_overview: 'Dashboard',
         nav_summary: 'Account Summary & Variance %',
         nav_reforecast: 'Rolling Forecasts (3+9 / 6+6 / 9+3)',
         nav_monthly_breach: 'Monthly Budget Breach Analysis',
@@ -1668,10 +1719,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         tip_scope: { title: 'نطاق الأداة: حسابات المصروفات فقط', body: 'صُممت المقارنة لحسابات المصروفات: الصرف الزائد عن الميزانية = تجاوز غير مرغوب، والصرف الأقل = وفر. لا تُستخدم لحسابات الإيرادات، لأن تجاوز ميزانية الإيرادات يُعد أمراً إيجابياً وستظهر نتائجه بشكل معكوس.' },
         tip_lang: { title: 'تبديل لغة الواجهة', body: 'يغير لغة عرض لوحة التحكم والتقارير بين العربية الفصحى والإنجليزية مع الحفاظ التام على بياناتك وأسماء الحسابات كما رفعتها.' },
         tip_sample: { title: 'نموذج البيانات المعياري', body: 'يعيد تحميل نموذج مالي متكامل لتجربة خصائص النظام ومشاهدة طريقة عمل التوقعات وتحليل الفواتير.' },
-        tip_export_all: { title: 'تصدير التقرير المالي الشامل (Excel)', body: 'يُصدر ملف Excel متعدد الأوراق يضم ملخص الحسابات، التوقعات المرحلية، التجاوزات الشهرية، المصاريف المتجاوزة سنوياً وشهرياً، مقترح السنة القادمة، وسجل التعديلات.' },
+        tip_export_all: { title: 'تصدير التقرير المالي الشامل (Excel)', body: 'يُصدر ملف Excel متعدد الأوراق يبدأ بلوحة مؤشرات تفاعلية (اختر الشهر والقسم من القائمتين لتتحدث الأرقام والرسوم)، ثم ملخص الحسابات، التوقعات المرحلية، التجاوزات الشهرية، المصاريف المتجاوزة سنوياً وشهرياً، مقترح السنة القادمة، وسجل التعديلات.' },
         tip_save_json: { title: 'حفظ ملف المشروع', body: 'يحفظ جميع الحسابات والقيود والتعديلات والملاحظات التفسيرية في ملف على جهازك لاستكمال العمل عليه لاحقاً.' },
         tip_load_json: { title: 'فتح مشروع محفوظ', body: 'يسترجع مشروعاً مالياً قمت بحفظه مسبقاً بكافة تفاصيله وتوقعاته.' },
         tip_nav_upload: { title: 'إدخال واستيراد البيانات', body: 'الخطوة الأولى: ارفع ملف الميزانية وملف المصاريف الفعلية (أو سجل الأستاذ العام GL) ليقوم النظام بمطابقتها على مستوى رقم الحساب.' },
+        tip_nav_overview: { title: 'لوحة المؤشرات', body: 'أداء الميزانية في صفحة واحدة: المؤشرات الرئيسية، الصرف الشهري مقابل الميزانية، أكبر الانحرافات، الانتقال من الميزانية إلى توقع السنة الكاملة، واستهلاك الميزانية حسب القسم، مع جدول الانحرافات الجوهرية. اختر الفترة والقسم من أعلى الصفحة.' },
         tip_nav_summary: { title: 'ملخص الحسابات ونسب الأداء', body: 'لوحة مقارنة شاملة لكل رقم حساب توضح الميزانية، الصرف الفعلي، الالتزامات القائمة، الصافي المتاح، والأهمية النسبية للانحرافات.' },
         tip_nav_rf: { title: 'التوقعات المرحلية (Rolling Forecasts)', body: 'تحديث توقعات الميزانية خلال السنة (3+9 و 6+6 و 9+3) بدمج الأشهر الفعلية المغلقة مع التقديرات المحدثة للأشهر المتبقية.' },
         tip_nav_monthly: { title: 'تحليل التجاوزات الشهرية', body: 'فحص تفصيلي لكل شهر على حدة لتحديد أي قيد أو فاتورة تسببت في كسر سقف الميزانية الشهرية بالتسلسل الزمني.' },
@@ -1726,10 +1778,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         tip_scope: { title: 'Scope: expense accounts only', body: 'The comparison is designed for expense accounts: spending above budget = unfavorable overrun, spending below budget = saving. Do not use it for revenue accounts, where exceeding budget is favorable and results would read in reverse.' },
         tip_lang: { title: 'Switch Interface Language', body: 'Toggles the dashboard between Formal Arabic (RTL) and Corporate English (LTR) while keeping your uploaded account names and descriptions intact.' },
         tip_sample: { title: 'Standard Reference Model', body: 'Loads a comprehensive financial dataset to preview rolling forecasts, breach tracking, and variance analytics.' },
-        tip_export_all: { title: 'Export Full Excel Report', body: 'Generates a multi-sheet Excel workbook containing Account Summary, Rolling Forecasts, Monthly Breaches, Annual & Monthly Over-Budget Invoices, Next Year Proposal, and the Change Log.' },
+        tip_export_all: { title: 'Export Full Excel Report', body: 'Generates a multi-sheet Excel workbook that opens on an interactive dashboard (pick the month and department from the two dropdowns and the figures and charts update), followed by Account Summary, Rolling Forecasts, Monthly Breaches, Annual & Monthly Over-Budget Invoices, Next Year Proposal, and the Change Log.' },
         tip_save_json: { title: 'Save Project File', body: 'Saves all accounts, GL transactions, rolling forecasts, commitments, and commentary into a local JSON file.' },
         tip_load_json: { title: 'Open Saved Project', body: 'Restores a previously saved JSON project file with all forecasts and notes.' },
         tip_nav_upload: { title: 'Data Import & Setup', body: 'Upload your Budget and Actual Expenses (or full-year GL log) to match and compare automatically by Account Number.' },
+        tip_nav_overview: { title: 'Dashboard', body: 'Budget performance on one page: key figures, monthly spend against budget, the largest variances, the path from budget to full-year forecast, budget use by department, and the material variances table. Choose the period and department at the top.' },
         tip_nav_summary: { title: 'Account Summary & Variance %', body: 'Complete account-level view showing Budget, Actuals, Open Commitments, Net Available Balance, Materiality flags, and Explanatory Notes.' },
         tip_nav_rf: { title: 'Rolling Forecasts (3+9 / 6+6 / 9+3)', body: 'Update full-year expectations by locking closed actual months and forecasting remaining open months.' },
         tip_nav_monthly: { title: 'Monthly Budget Breach Analysis', body: 'Inspect chronological GL transactions within any month to pinpoint the exact invoice that breached the monthly budget.' },
@@ -2049,6 +2102,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           bar.scrollLeft += (btnRect.left + btnRect.width / 2) - (barRect.left + barRect.width / 2);
         }
       }
+      // The dashboard charts are sized to the visible width, so draw them once the tab is shown
+      if (tabId === 'tab-overview') renderOverview();
     }
 
     // ============================================================================
@@ -2121,10 +2176,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       Object.values(appState.accounts).forEach(acc => {
         acc.actualMonthly = new Array(12).fill(0);
       });
-      appState.glTransactions.sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return String(a.accountNo).localeCompare(String(b.accountNo));
-      });
+      appState.glTransactions.sort(txSortCmp);
       appState.glTransactions.forEach(tx => {
         const acc = ensureAccountExists(tx.accountNo, tx.accountName, tx.department, tx.category);
         if (acc && tx.monthIndex >= 0 && tx.monthIndex < 12) {
@@ -2223,6 +2275,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
     // Last month with any actual activity in the data (ignores the manual setting)
     function getDataLastMonthIndex() {
+      return cached('lastData', getDataLastMonthIndexNow);
+    }
+    function getDataLastMonthIndexNow() {
       let maxM = -1;
       Object.values(appState.accounts).forEach(acc => {
         for (let m = 0; m < 12; m++) {
@@ -2315,8 +2370,30 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       if (acc._i18n) acc._i18n.note = null;
     }
 
-    // Analytical Review Flags on GL Transactions (Split Invoices, Month-End Spike, Missing Ref)
+    // ---------------- Per-refresh calculation cache ----------------
+    // Heavy results (analytical flags, breach rows, sorted GL) are computed once per screen update
+    // and shared by every tab, instead of being recomputed by each table and chart.
+    let __rc = null;
+    function withRenderCache(fn) {
+      if (__rc) return fn();
+      __rc = {};
+      try { return fn(); } finally { __rc = null; }
+    }
+    function cached(key, compute) {
+      if (!__rc) return compute();
+      if (!(key in __rc)) __rc[key] = compute();
+      return __rc[key];
+    }
+    const txSortCmp = (a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.accountNo < b.accountNo ? -1 : a.accountNo > b.accountNo ? 1 : 0));
+    function getSortedTx() {
+      return cached('sortedTx', () => [...appState.glTransactions].sort(txSortCmp));
+    }
+
+    // Analytical Review Flags on GL Transactions (Split Invoices, Month-End Spike, Missing Ref, Duplicates)
     function computeAnalyticalFlagsMap() {
+      return cached('flags', computeAnalyticalFlagsMapNow);
+    }
+    function computeAnalyticalFlagsMapNow() {
       const flagsMap = {}; // tx.id -> string[]
       const byAcc = {};
       appState.glTransactions.forEach(tx => {
@@ -2358,17 +2435,20 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         ids.forEach(id => { if (!flagsMap[id].includes('flag_duplicate')) flagsMap[id].push('flag_duplicate'); });
       });
 
-      // Check Split Invoices within 3 days on the same account
+      // Check Split Invoices within 3 days (same account, same month).
+      // Each account's entries are sorted by date once and only entries inside the 3-day window
+      // are compared (sliding window), so large General Ledgers stay fast.
+      const dayNo = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 86400000;
       Object.values(byAcc).forEach(list => {
-        for (let i = 0; i < list.length; i++) {
-          const d1 = new Date(list[i].date);
-          for (let j = i + 1; j < list.length; j++) {
-            const d2 = new Date(list[j].date);
-            const diffDays = Math.abs((d2 - d1) / (1000 * 60 * 60 * 24));
-            if (diffDays <= 3 && list[i].monthIndex === list[j].monthIndex) {
-              if (!flagsMap[list[i].id].includes('flag_split')) flagsMap[list[i].id].push('flag_split');
-              if (!flagsMap[list[j].id].includes('flag_split')) flagsMap[list[j].id].push('flag_split');
-            }
+        const L = list.map(tx => ({ tx, d: dayNo(tx.date || '1970-01-01') })).sort((a, b) => a.d - b.d);
+        let lo = 0;
+        for (let hi = 0; hi < L.length; hi++) {
+          while (L[hi].d - L[lo].d > 3) lo++;
+          for (let k = lo; k < hi; k++) {
+            if (L[k].tx.monthIndex !== L[hi].tx.monthIndex) continue;
+            const a = flagsMap[L[k].tx.id], b = flagsMap[L[hi].tx.id];
+            if (!a.includes('flag_split')) a.push('flag_split');
+            if (!b.includes('flag_split')) b.push('flag_split');
           }
         }
       });
@@ -2922,10 +3002,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
     // 9. TAB 4: MONTHLY BUDGET BREACH ANALYSIS
     // ============================================================================
     function computeMonthlyGLBreachRows(versionKey, breachMode) {
-      const sortedTx = [...appState.glTransactions].sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return String(a.accountNo).localeCompare(String(b.accountNo));
-      });
+      return cached(`gl|${versionKey}|${breachMode}`, () => computeMonthlyGLBreachRowsNow(versionKey, breachMode));
+    }
+    function computeMonthlyGLBreachRowsNow(versionKey, breachMode) {
+      const sortedTx = getSortedTx();
 
       const flagsMap = computeAnalyticalFlagsMap();
       const runningByAccMonth = {};
@@ -3006,7 +3086,24 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         <button class="btn btn-outline btn-sm" onclick="(function(){const s=document.getElementById('${elId === 'gl-version-warning' ? 'gl-budget-version' : 's5-version-select'}'); s.value='orig'; s.dispatchEvent(new Event('change'));})()">${isAr ? 'العودة للميزانية الأصلية' : 'Use Original Budget'}</button>`;
     }
 
+    // Large tables render in pages: first 500 rows, then "show more" (exports always include all rows)
+    const TABLE_PAGE = 500;
+    const __pageLimit = { gl: TABLE_PAGE, s5: TABLE_PAGE };
+    function showMoreRows(which) {
+      __pageLimit[which] += TABLE_PAGE;
+      if (which === 'gl') renderGLBreachTable(true); else renderSheet5Tab(true);
+    }
+    function moreRowsHtml(which, shown, total, colspan) {
+      if (shown >= total) return '';
+      const n = Math.min(TABLE_PAGE, total - shown);
+      const label = currentLang === 'ar'
+        ? `عرض ${n.toLocaleString('en-US')} إضافية (معروض ${shown.toLocaleString('en-US')} من ${total.toLocaleString('en-US')})`
+        : `Show ${n.toLocaleString('en-US')} more (${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} shown)`;
+      return `<tr><td colspan="${colspan}" style="text-align:center; padding:10px;"><button class="btn btn-outline btn-sm" onclick="showMoreRows('${which}')">${label}</button></td></tr>`;
+    }
+
     function renderGLBreachTab() {
+      if (!__rc) return withRenderCache(renderGLBreachTab);
       renderBreachVersionWarning('gl-version-warning', (document.getElementById('gl-budget-version') || {}).value || 'orig');
       const ver = (document.getElementById('gl-budget-version') || {}).value || 'orig';
       const mode = (document.getElementById('gl-breach-mode') || {}).value || 'monthly';
@@ -3060,7 +3157,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       renderGLBreachTab();
     }
 
-    function renderGLBreachTable() {
+    function renderGLBreachTable(keepLimit) {
+      if (!__rc) return withRenderCache(() => renderGLBreachTable(keepLimit));
+      if (keepLimit !== true) __pageLimit.gl = TABLE_PAGE;
       const ver = (document.getElementById('gl-budget-version') || {}).value || 'orig';
       const mode = (document.getElementById('gl-breach-mode') || {}).value || 'monthly';
       const monthFilter = (document.getElementById('gl-month-filter') || {}).value || 'ALL';
@@ -3110,11 +3209,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       let totInvAmt = 0, totExcess = 0;
       let html = '';
+      filtered.forEach(r => { totInvAmt += Number(r.amount) || 0; if (r.isOver) totExcess += r.excessAmt; });
+      const glShown = filtered.slice(0, __pageLimit.gl);
 
-      filtered.forEach((r, i) => {
-        totInvAmt += Number(r.amount) || 0;
-        if (r.isOver) totExcess += r.excessAmt;
-
+      glShown.forEach((r, i) => {
         let statusBadge = `<span class="pill pill-success">${t('status_within')}</span>`;
         if (r.isFirstBreach) statusBadge = `<span class="pill pill-warning">${t('status_first_breach')}</span>`;
         else if (r.isOver) statusBadge = `<span class="pill pill-danger">${t('status_after_breach')}</span>`;
@@ -3147,7 +3245,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         `;
       });
 
-      tbody.innerHTML = html || `<tr><td colspan="14" style="text-align:center; padding:24px;">-</td></tr>`;
+      tbody.innerHTML = (html + moreRowsHtml('gl', glShown.length, filtered.length, 14)) || `<tr><td colspan="14" style="text-align:center; padding:24px;">-</td></tr>`;
       tfoot.innerHTML = `
         <tr>
           <td colspan="7">${t('th_total')} (${filtered.length})</td>
@@ -3161,10 +3259,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
     // 10. TAB 5: ANNUAL & MONTHLY OVER-BUDGET EXPENSES (UP TO INVOICE DATE)
     // ============================================================================
     function computeSheet5DualBreachInvoices(versionKey) {
-      const sortedTx = [...appState.glTransactions].sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return String(a.accountNo).localeCompare(String(b.accountNo));
-      });
+      return cached(`s5|${versionKey}`, () => computeSheet5DualBreachInvoicesNow(versionKey));
+    }
+    function computeSheet5DualBreachInvoicesNow(versionKey) {
+      const sortedTx = getSortedTx();
 
       const flagsMap = computeAnalyticalFlagsMap();
       const monthCumByAcc = {};
@@ -3225,7 +3323,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       return results;
     }
 
-    function renderSheet5Tab() {
+    function renderSheet5Tab(keepLimit) {
+      if (!__rc) return withRenderCache(() => renderSheet5Tab(keepLimit));
+      if (keepLimit !== true) __pageLimit.s5 = TABLE_PAGE;
       renderBreachVersionWarning('s5-version-warning', (document.getElementById('s5-version-select') || {}).value || 'orig');
       const ver = (document.getElementById('s5-version-select') || {}).value || 'orig';
       const filterMode = (document.getElementById('s5-filter-mode') || {}).value || 'ANY_BREACH';
@@ -3284,10 +3384,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       let totInvoiceAmt = 0;
       let html = '';
+      filtered.forEach(r => { totInvoiceAmt += Number(r.amount) || 0; });
+      const s5Shown = filtered.slice(0, __pageLimit.s5);
 
-      filtered.forEach((r, i) => {
-        totInvoiceAmt += Number(r.amount) || 0;
-
+      s5Shown.forEach((r, i) => {
         let statusPill = `<span class="pill pill-success">${t('status_within')}</span>`;
         if (r.isAnnualBreach && r.isMonthBreach) statusPill = `<span class="pill pill-danger">${t('status_both_breach')}</span>`;
         else if (r.isAnnualBreach) statusPill = `<span class="pill pill-danger">${t('status_ann_breach')}</span>`;
@@ -3334,7 +3434,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         `;
       });
 
-      tbody.innerHTML = html || `<tr><td colspan="18" style="text-align:center; padding:24px;">-</td></tr>`;
+      tbody.innerHTML = (html + moreRowsHtml('s5', s5Shown.length, filtered.length, 18)) || `<tr><td colspan="18" style="text-align:center; padding:24px;">-</td></tr>`;
       tfoot.innerHTML = `
         <tr>
           <td colspan="7">${t('th_total')} (${filtered.length})</td>
@@ -4267,8 +4367,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       refreshAllViews();
 
       if (fromUser) {
-        // Visible confirmation: jump to the summary so the loaded figures are on screen
-        switchTab('tab-dashboard');
+        // Visible confirmation: jump to the management dashboard so the loaded figures are on screen
+        switchTab('tab-overview');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         showToast(isAr
           ? `✅ تم تحميل بيانات المعاينة: ${Object.keys(appState.accounts).length} حسابات و${appState.glTransactions.length} قيداً للسنة ${appState.fiscalYear}`
@@ -4277,6 +4377,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
     }
 
     function refreshAllViews() {
+      withRenderCache(refreshAllViewsNow);
+    }
+    function refreshAllViewsNow() {
       const accCount = Object.keys(appState.accounts).length;
       const glCount = appState.glTransactions.length;
       const lastM = getLastActualMonthIndex();
@@ -4298,6 +4401,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       renderGLBreachTab();
       renderSheet5Tab();
       renderNextYearTable();
+      renderOverview();
     }
 
     function populateFilterDropdowns() {
@@ -4584,6 +4688,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       const ytdPeriod = exportLastClosed >= 0 ? `${mNames[0]}–${mNames[exportLastClosed]}` : xl('na');
       const benchHeader = `${xl('bench')} (${xl('v_' + ver)})`;
 
+      // Sheet 0: interactive management dashboard (first sheet; its hidden data sheet is added last)
+      let dashCtx = null;
+      try { dashCtx = xlDashBegin(wb, xlDashModel(accList, exportLastClosed)); } catch (e) { console.error('Dashboard sheet skipped', e); dashCtx = null; }
+
       // Sheet 1: Account Summary, YTD, Commitments & Variance %
       const s1Rows = accList.map(acc => {
         const ytd = computeYtdStats(acc, exportLastClosed);
@@ -4697,7 +4805,41 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       // Sheet 6: Change log (audit trail)
       XLSX.utils.book_append_sheet(wb, xlSheet(buildChangeLogRows()), xl('sh6'));
 
-      XLSX.writeFile(wb, 'FPA_Financial_Budget_And_Breach_Report.xlsx');
+      const fileName = 'FPA_Financial_Budget_And_Breach_Report.xlsx';
+      if (dashCtx) {
+        try {
+          const info = xlDashFinish(wb, dashCtx);
+          const bytes = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+          xlSaveBytes(xlDashPostProcess(bytes, info), fileName);
+          return;
+        } catch (e) {
+          // Never lose the report: fall back to the workbook without the dashboard sheets
+          console.error('Dashboard sheet skipped', e);
+          [dashCtx.S.dash, dashCtx.S.data].forEach(nm => {
+            const i = wb.SheetNames.indexOf(nm);
+            if (i >= 0) { wb.SheetNames.splice(i, 1); delete wb.Sheets[nm]; }
+          });
+          if (wb.Workbook) delete wb.Workbook.Sheets;
+        }
+      }
+      XLSX.writeFile(wb, fileName);
+    }
+
+    // Model for the Excel dashboard sheet: monthly arrays per account in the export language
+    function xlDashModel(accList, lastClosed) {
+      const m12 = (arr) => Array.from({ length: 12 }, (_, i) => Number(arr && arr[i]) || 0);
+      return {
+        lang: currentLang === 'ar' ? 'ar' : 'en',
+        monthNames: getMonthNames(),
+        lastClosed,
+        materiality: { pct: Number(appState.materiality.pct) || 0, amount: Number(appState.materiality.amount) || 0 },
+        accounts: accList.map(a => ({
+          no: String(a.accountNo), name: a.accountName || String(a.accountNo), dept: a.department || '-',
+          orig: m12(a.origMonthly), actual: m12(a.actualMonthly),
+          f39: m12(a.f3_9Monthly), f66: m12(a.f6_6Monthly), f93: m12(a.f9_3Monthly),
+          commit: Number(a.commitments) || 0, nature: xlVType(a)
+        }))
+      };
     }
 
     function buildSheet5ExportJson(ver) {
@@ -4944,9 +5086,1093 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       showToast(currentLang === 'ar' ? 'تم تسجيل قيد المصروف بنجاح' : 'GL transaction added successfully');
     }
 
+    // ============================================================================
+    // 16. MANAGEMENT DASHBOARD TAB
+    // Charts are drawn as SVG by the tool itself (no chart library, fully offline). Each chart can be
+    // copied as an image or downloaded as PNG; the material-variance table copies as a formatted table.
+    // ============================================================================
+    const OV = {
+      en: {
+        title: 'Budget performance dashboard',
+        sub: 'Expenses · {m0} to {m} {y} (year to date) · basis: original budget',
+        f_period: 'Period through', f_dept: 'Department', f_units: 'Values', all_depts: 'All departments',
+        u_auto: 'Auto', u_u: 'Units', u_k: 'Thousands (K)', u_m: 'Millions (M)', u_b: 'Billions (B)',
+        k_head: 'Budget performance · {m0} to {m} {y} · {d}',
+        k_ytd_b: 'YTD budget', k_ytd_b_sub: 'Full year {v}',
+        k_ytd_a: 'YTD actual', k_ytd_a_sub: '{p} of full-year budget',
+        k_var: 'YTD variance', k_var_over: '{p} over budget', k_var_under: '{p} under budget', k_var_zero: 'On budget',
+        k_eac: 'Full-year forecast (EAC)', k_eac_sub: '{v} ({p}) vs budget',
+        k_avail: 'Available after commitments', k_avail_sub: 'Open commitments {v}',
+        ch_monthly: 'Monthly spend vs budget', ch_monthly_sub: 'Actual for {m0} to {m}, forecast after',
+        lg_actual: 'Actual within budget', lg_over: 'Actual over budget', lg_fc: 'Forecast', lg_budget: 'Budget',
+        ch_var: 'Year-to-date variance by account', ch_var_sub: 'Largest variances first · {m0} to {m}',
+        lg_overb: 'Over budget', lg_underb: 'Under budget', other: '{n} other accounts', other_d: '{n} other departments',
+        ch_bridge: 'Budget to full-year forecast', ch_bridge_sub: 'What moves {a} to {b}',
+        br_budget: 'Budget', br_fc: 'Forecast', lg_total: 'Total', lg_inc: 'Increase', lg_dec: 'Decrease',
+        ch_dept: 'Budget used by department', ch_dept_sub: 'Year-to-date actual as % of year-to-date budget',
+        lg_within: 'Within budget', lg_overd: 'Over budget', lg_line: '100% of budget',
+        tbl: 'Material variances', tbl_sub: 'Year to date, at least {pct}% and {amt}',
+        c_acc: 'Account', c_var: 'YTD variance', c_pct: '%', c_cause: 'Cause', c_note: 'Explanation',
+        none: 'No material variances for this selection.',
+        tip_actual: 'Actual', tip_fc: 'Forecast', tip_var: 'Variance', tip_budget: 'Budget', tip_ytd_b: 'YTD budget', tip_ytd_a: 'YTD actual',
+        copy: 'Copy', download: 'Download image', copied: 'Copied', copy_failed: 'Copying is not available here, so the image was downloaded instead.',
+        empty: 'Import a budget and actual expenses to see the dashboard.'
+      },
+      ar: {
+        title: 'لوحة أداء الميزانية',
+        sub: 'المصروفات · من {m0} إلى {m} {y} (حتى تاريخه) · الأساس: الميزانية الأصلية',
+        f_period: 'الفترة حتى', f_dept: 'القسم', f_units: 'عرض المبالغ', all_depts: 'جميع الأقسام',
+        u_auto: 'تلقائي', u_u: 'بالوحدة', u_k: 'بالآلاف (K)', u_m: 'بالملايين (M)', u_b: 'بالمليارات (B)',
+        k_head: 'أداء الميزانية · من {m0} إلى {m} {y} · {d}',
+        k_ytd_b: 'الميزانية حتى تاريخه', k_ytd_b_sub: 'السنة كاملة {v}',
+        k_ytd_a: 'الصرف الفعلي حتى تاريخه', k_ytd_a_sub: '{p} من ميزانية السنة',
+        k_var: 'الانحراف حتى تاريخه', k_var_over: '{p} تجاوز للميزانية', k_var_under: '{p} وفر عن الميزانية', k_var_zero: 'مطابق للميزانية',
+        k_eac: 'توقع السنة الكاملة (EAC)', k_eac_sub: '{v} ({p}) عن الميزانية',
+        k_avail: 'المتاح بعد الالتزامات', k_avail_sub: 'الالتزامات القائمة {v}',
+        ch_monthly: 'الصرف الشهري مقابل الميزانية', ch_monthly_sub: 'فعلي من {m0} إلى {m}، وتوقع بعدها',
+        lg_actual: 'فعلي ضمن الميزانية', lg_over: 'فعلي متجاوز للميزانية', lg_fc: 'توقع', lg_budget: 'الميزانية',
+        ch_var: 'الانحراف حتى تاريخه حسب الحساب', ch_var_sub: 'الأكبر أثراً أولاً · من {m0} إلى {m}',
+        lg_overb: 'تجاوز', lg_underb: 'وفر', other: '{n} حسابات أخرى', other_d: '{n} أقسام أخرى',
+        ch_bridge: 'من الميزانية إلى توقع السنة الكاملة', ch_bridge_sub: 'ما الذي ينقل {a} إلى {b}',
+        br_budget: 'الميزانية', br_fc: 'التوقع', lg_total: 'إجمالي', lg_inc: 'زيادة', lg_dec: 'نقص',
+        ch_dept: 'استهلاك الميزانية حسب القسم', ch_dept_sub: 'الصرف الفعلي حتى تاريخه كنسبة من ميزانية الفترة',
+        lg_within: 'ضمن الميزانية', lg_overd: 'تجاوز', lg_line: '100% من الميزانية',
+        tbl: 'الانحرافات الجوهرية', tbl_sub: 'حتى تاريخه، {pct}% و{amt} فأكثر',
+        c_acc: 'الحساب', c_var: 'الانحراف حتى تاريخه', c_pct: '%', c_cause: 'السبب', c_note: 'التفسير',
+        none: 'لا توجد انحرافات جوهرية لهذا الاختيار.',
+        tip_actual: 'الفعلي', tip_fc: 'التوقع', tip_var: 'الانحراف', tip_budget: 'الميزانية', tip_ytd_b: 'الميزانية حتى تاريخه', tip_ytd_a: 'الفعلي حتى تاريخه',
+        copy: 'نسخ', download: 'تحميل صورة', copied: 'تم النسخ', copy_failed: 'النسخ غير متاح هنا، لذلك تم تحميل الصورة بدلاً منه.',
+        empty: 'استورد الميزانية والمصاريف الفعلية لعرض لوحة المؤشرات.'
+      }
+    };
+    function ovT(k, vars) {
+      let s = (OV[currentLang] && OV[currentLang][k]) || OV.en[k] || k;
+      if (vars) Object.keys(vars).forEach(v => { s = s.split('{' + v + '}').join(vars[v]); });
+      return s;
+    }
+
+    const ovState = { period: null, dept: 'ALL', units: 'auto' };
+    const OVC = { blue: '#2a78d6', red: '#e34948', fc: '#9ec5f4', budget: '#52514e', total: '#888780', grid: '#e1e0d9', axis: '#c3c2b7', ink: '#0f172a', ink2: '#475569', muted: '#5f5e5a', track: '#eef1f5', tile: '#f1f5f9', redInk: '#b91c1c', blueInk: '#1d4ed8' };
+    const OV_FONT = "'Segoe UI', Tahoma, Arial, sans-serif";
+    // Arabic: numbers are kept left-to-right inside the right-to-left text, so "-18.7K" never shows as "18.7K-"
+    // (bidi isolates, not embeddings: Chrome lays out embeddings inside SVG text in the wrong order)
+    const ovLtr = (s) => (currentLang === 'ar' ? '⁦' + s + '⁩' : s);
+
+    function ovUnit(maxAbs) {
+      const u = ovState.units === 'auto' ? (maxAbs >= 1e9 ? 'b' : maxAbs >= 1e6 ? 'm' : maxAbs >= 1e4 ? 'k' : 'u') : ovState.units;
+      return { div: { u: 1, k: 1e3, m: 1e6, b: 1e9 }[u], suf: { u: '', k: 'K', m: 'M', b: 'B' }[u], dec: u === 'u' ? 0 : 1 };
+    }
+    function ovFmt(v, U, signed) {
+      const x = Math.abs(v) / U.div;
+      const s = x.toLocaleString('en-US', { minimumFractionDigits: U.dec, maximumFractionDigits: U.dec }) + U.suf;
+      const isZero = Number(x.toFixed(U.dec)) === 0;
+      return ovLtr((v < 0 && !isZero ? '-' : (signed && v > 0 && !isZero ? '+' : '')) + s);
+    }
+    const ovPct = (v, signed) => (v === null || v === undefined || !isFinite(v)) ? '-' : ovLtr((signed && v > 0 ? '+' : '') + v.toFixed(1) + '%');
+    const ovFull = (v, signed) => ovLtr((signed && v > 0 ? '+' : '') + (v < 0 ? '-' : '') + Math.abs(Math.round(v)).toLocaleString('en-US'));
+
+    function ovTextW(text, size, bold) {
+      const c = ovTextW.c || (ovTextW.c = document.createElement('canvas').getContext('2d'));
+      c.font = `${bold ? '700 ' : ''}${size}px ${OV_FONT}`;
+      return c.measureText(String(text)).width;
+    }
+    function ovFit(text, size, maxW, bold) {
+      let s = String(text);
+      if (ovTextW(s, size, bold) <= maxW) return s;
+      while (s.length > 1 && ovTextW(s + '…', size, bold) > maxW) s = s.slice(0, -1);
+      return s + '…';
+    }
+    // Up to two lines of text within maxW (the second line is shortened if needed)
+    function ovWrap2(text, size, maxW) {
+      const words = String(text).split(/\s+/).filter(Boolean);
+      if (!words.length) return [''];
+      if (ovTextW(words.join(' '), size) <= maxW) return [words.join(' ')];
+      let l1 = words[0], i = 1;
+      while (i < words.length && ovTextW(l1 + ' ' + words[i], size) <= maxW) { l1 += ' ' + words[i]; i++; }
+      if (i === words.length) return [ovFit(l1, size, maxW)];
+      return [ovFit(l1, size, maxW), ovFit(words.slice(i).join(' '), size, maxW)];
+    }
+    function ovNice(min, max, n) {
+      if (max - min < 1e-9) max = min + 1;
+      const raw = (max - min) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), norm = raw / mag;
+      const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10) * mag;
+      return { min: Math.floor(min / step + 1e-9) * step, max: Math.ceil(max / step - 1e-9) * step, step };
+    }
+    const ovE = (s) => escapeHtml(s);
+    const ovTipAttr = (lines) => ` data-ovtip="${ovE(lines.join('\n'))}"`;
+
+    // Text at an absolute position: pos 'l' = left edge at x, 'r' = right edge at x, 'm' = centred.
+    // The SVG itself is always laid out left-to-right; Arabic text runs right-to-left inside its own bidi isolate.
+    function ovTx(x, y, pos, content, size, fill, extra) {
+      const anchor = pos === 'm' ? 'middle' : pos === 'r' ? 'end' : 'start';
+      const txt = currentLang === 'ar' ? '⁧' + content + '⁩' : content;
+      return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" fill="${fill}"${extra || ''}>${ovE(txt)}</text>`;
+    }
+
+    function ovSvg(W, H, label, body) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" direction="ltr" font-family="${OV_FONT}" role="img" aria-label="${ovE(label)}"><rect width="${W}" height="${H}" fill="#ffffff"/>${body}</svg>`;
+    }
+
+    // Title, subtitle and legend drawn inside the SVG so a saved chart carries its own labels
+    function ovHeader(W, title, sub, legend) {
+      const rtl = currentLang === 'ar', pad = 2, reserve = 76;
+      const pos = rtl ? 'r' : 'l', x = rtl ? W - pad : pad;
+      let fs = 15; while (fs > 12 && ovTextW(title, fs, true) > W - reserve) fs--;
+      let s = ovTx(x, 18, pos, ovFit(title, fs, W - reserve, true), fs, OVC.ink, ' font-weight="700"');
+      s += ovTx(x, 37, pos, ovFit(sub, 12, W - 8), 12, OVC.ink2);
+      let y = 60, cx = x;
+      (legend || []).forEach(it => {
+        const w = 18 + ovTextW(it.label, 12) + 16;
+        if (!rtl && cx + w > W) { cx = pad; y += 18; }
+        if (rtl && cx - w < 0) { cx = W - pad; y += 18; }
+        const sx = rtl ? cx - 14 : cx;
+        s += it.kind === 'line'
+          ? `<line x1="${sx}" y1="${y - 4}" x2="${sx + 14}" y2="${y - 4}" stroke="${it.color}" stroke-width="2" stroke-dasharray="4 3"/><circle cx="${sx + 7}" cy="${y - 4}" r="3.5" fill="${it.color}" stroke="#ffffff" stroke-width="1.5"/>`
+          : it.kind === 'marker'
+            ? `<line x1="${sx + 7}" y1="${y - 11}" x2="${sx + 7}" y2="${y + 2}" stroke="${it.color}" stroke-width="2"/>`
+            : `<rect x="${sx + 2}" y="${y - 9}" width="10" height="10" rx="2" fill="${it.color}"${it.outline ? ` stroke="${it.outline}" stroke-width="1"` : ''}/>`;
+        s += ovTx(rtl ? cx - 18 : cx + 18, y, pos, it.label, 12, OVC.ink2);
+        cx = rtl ? cx - w : cx + w;
+      });
+      return { svg: s, top: legend && legend.length ? y + 16 : 50 };
+    }
+
+    function ovColPath(x, yTop, w, yBase) {
+      const h = yBase - yTop; if (h <= 0.5) return '';
+      const r = Math.min(4, w / 2, h);
+      return `M${x},${yBase}V${yTop + r}Q${x},${yTop} ${x + r},${yTop}H${x + w - r}Q${x + w},${yTop} ${x + w},${yTop + r}V${yBase}Z`;
+    }
+    function ovHBarPath(x0, x1, y, h) {
+      const w = Math.abs(x1 - x0); if (w < 0.5) return '';
+      const r = Math.min(4, h / 2, w);
+      return x1 >= x0
+        ? `M${x0},${y}H${x1 - r}Q${x1},${y} ${x1},${y + r}V${y + h - r}Q${x1},${y + h} ${x1 - r},${y + h}H${x0}Z`
+        : `M${x0},${y}H${x1 + r}Q${x1},${y} ${x1},${y + r}V${y + h - r}Q${x1},${y + h} ${x1 + r},${y + h}H${x0}Z`;
+    }
+
+    // ---------------- Data for the dashboard (period, department filters) ----------------
+    function ovModel() {
+      const lastData = getLastActualMonthIndex();
+      const all = Object.values(appState.accounts);
+      if (lastData < 0 || !all.length) return null;
+      const depts = [...new Set(all.map(a => a.department || '-'))];
+      if (ovState.dept !== 'ALL' && !depts.includes(ovState.dept)) ovState.dept = 'ALL';
+      const p = (ovState.period === null || ovState.period > lastData) ? lastData : ovState.period;
+      const accs = all.filter(a => ovState.dept === 'ALL' || (a.department || '-') === ovState.dept)
+        .sort((a, b) => String(a.accountNo).localeCompare(String(b.accountNo)));
+      const ver = getLatestForecastVersion(p);
+      const rows = accs.map(a => ({ a, ytd: computeYtdStats(a, p), eac: computeEac(a, p), fy: sumArr(a.origMonthly), commit: Number(a.commitments) || 0 }));
+      const T = rows.reduce((s, r) => { s.yb += r.ytd.budget; s.ya += r.ytd.actual; s.fy += r.fy; s.eac += r.eac.eac; s.commit += r.commit; return s; }, { yb: 0, ya: 0, fy: 0, eac: 0, commit: 0 });
+      const monthly = [];
+      for (let m = 0; m < 12; m++) {
+        let budget = 0, value = 0;
+        rows.forEach(r => {
+          budget += Number(r.a.origMonthly[m]) || 0;
+          value += m <= p ? (Number(r.a.actualMonthly[m]) || 0) : (Number(getBenchmarkMonthlyArray(r.a, ver)[m]) || 0);
+        });
+        monthly.push({ budget, value, isFc: m > p });
+      }
+      const U = ovUnit(Math.max(Math.abs(T.fy), Math.abs(T.eac), 1));
+      return { p, depts, rows, T, monthly, U, year: appState.fiscalYear || new Date().getFullYear() };
+    }
+
+    // ---------------- KPI tiles ----------------
+    function ovKpiSvg(M, W) {
+      const mN = getMonthNames(), U = M.U, T = M.T, rtl = currentLang === 'ar';
+      const cols = W >= 900 ? 5 : W >= 560 ? 3 : 2, gap = 10, headH = 26;
+      const tw = (W - gap * (cols - 1)) / cols, nRows = Math.ceil(5 / cols);
+      const v = T.ya - T.yb, vp = T.yb ? v / T.yb * 100 : null, ev = T.eac - T.fy, evp = T.fy ? ev / T.fy * 100 : null;
+      const avail = T.fy - T.ya - T.commit;
+      const tiles = [
+        { l: ovT('k_ytd_b'), v: ovFmt(T.yb, U), s: ovT('k_ytd_b_sub', { v: ovFmt(T.fy, U) }), sc: OVC.ink2 },
+        { l: ovT('k_ytd_a'), v: ovFmt(T.ya, U), s: ovT('k_ytd_a_sub', { p: T.fy ? ovLtr(Math.round(T.ya / T.fy * 100) + '%') : '-' }), sc: OVC.ink2 },
+        { l: ovT('k_var'), v: ovFmt(v, U, true), vc: v > 0 ? OVC.redInk : v < 0 ? OVC.blueInk : OVC.ink,
+          s: v === 0 ? ovT('k_var_zero') : ovT(v > 0 ? 'k_var_over' : 'k_var_under', { p: vp === null ? '-' : ovPct(Math.abs(vp)) }), sc: v > 0 ? OVC.redInk : v < 0 ? OVC.blueInk : OVC.ink2 },
+        { l: ovT('k_eac'), v: ovFmt(T.eac, U), s: ovT('k_eac_sub', { v: ovFmt(ev, U, true), p: ovPct(evp, true) }), sc: ev > 0 ? OVC.redInk : ev < 0 ? OVC.blueInk : OVC.ink2 },
+        { l: ovT('k_avail'), v: ovFmt(avail, U), vc: avail < 0 ? OVC.redInk : OVC.ink, s: ovT('k_avail_sub', { v: ovFmt(T.commit, U) }), sc: OVC.ink2 }
+      ];
+      const deptLbl = ovState.dept === 'ALL' ? ovT('all_depts') : ovState.dept;
+      const head = ovT('k_head', { m0: mN[0], m: mN[M.p], y: M.year, d: deptLbl });
+      // Narrow tiles (phones) wrap the label and the note to a second line instead of cutting them
+      const lab = tiles.map(t => ovWrap2(t.l, 12, tw - 28)), sub = tiles.map(t => ovWrap2(t.s, 11.5, tw - 28));
+      const exL = Math.max(...lab.map(l => l.length)) - 1, exS = Math.max(...sub.map(l => l.length)) - 1;
+      const th = 96 + 14 * (exL + exS), H = headH + nRows * th + (nRows - 1) * gap;
+      let s = ovTx(rtl ? W - 2 : 2, 16, rtl ? 'r' : 'l', ovFit(head, 12, W - 80), 12, OVC.ink2);
+      tiles.forEach((t, i) => {
+        const r = Math.floor(i / cols), c = i % cols;
+        const x = rtl ? W - (c + 1) * tw - c * gap : c * (tw + gap), y = headH + r * (th + gap);
+        const tx = rtl ? x + tw - 14 : x + 14, pos = rtl ? 'r' : 'l';
+        let fs = 24; while (fs > 14 && ovTextW(t.v, fs, true) > tw - 28) fs--;
+        s += `<rect x="${x}" y="${y}" width="${tw}" height="${th}" rx="8" fill="${OVC.tile}"/>`;
+        lab[i].forEach((ln, k) => { s += ovTx(tx, y + 24 + k * 14, pos, ln, 12, OVC.ink2); });
+        s += ovTx(tx, y + 58 + 14 * exL, pos, t.v, fs, t.vc || OVC.ink, ' font-weight="700"');
+        sub[i].forEach((ln, k) => { s += ovTx(tx, y + 81 + 14 * exL + k * 14, pos, ln, 11.5, t.sc); });
+      });
+      return ovSvg(W, H, head, s);
+    }
+
+    // ---------------- Monthly spend vs budget ----------------
+    function ovMonthlySvg(M, W) {
+      const mN = getMonthNames();
+      // "Auto" picks the unit from this chart's own range (monthly amounts are smaller than annual totals)
+      const U = ovState.units === 'auto' ? ovUnit(Math.max(1, ...M.monthly.flatMap(m => [Math.abs(m.budget), Math.abs(m.value)]))) : M.U;
+      const hdr = ovHeader(W, ovT('ch_monthly'), ovT('ch_monthly_sub', { m0: mN[0], m: mN[M.p] }), [
+        { label: ovT('lg_actual'), color: OVC.blue }, { label: ovT('lg_over'), color: OVC.red },
+        { label: ovT('lg_fc'), color: OVC.fc, outline: OVC.blue }, { label: ovT('lg_budget'), color: OVC.budget, kind: 'line' }]);
+      const vals = M.monthly.flatMap(m => [m.budget, m.value]);
+      const sc = ovNice(Math.min(0, ...vals), Math.max(...vals, 1), 5);
+      const axisW = Math.max(...[sc.min, sc.max].map(v => ovTextW(ovFmt(v, U), 11))) + 10;
+      const left = axisW + 4, right = 6, top = hdr.top + 4, H = top + 230, bottom = H - 28;
+      const y = (v) => bottom - (v - sc.min) / (sc.max - sc.min) * (bottom - top);
+      const band = (W - left - right) / 12, bw = Math.min(30, band * 0.58);
+      let s = hdr.svg;
+      for (let v = sc.min; v <= sc.max + sc.step / 2; v += sc.step) {
+        s += `<line x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}" stroke="${Math.abs(v) < 1e-9 ? OVC.axis : OVC.grid}" stroke-width="1"/>`;
+        s += ovTx(left - 6, y(v) + 4, 'r', ovFmt(v, U), 11, OVC.muted);
+      }
+      const showEvery = band < 34 ? 2 : 1;
+      M.monthly.forEach((m, i) => {
+        const cx = left + band * i + band / 2;
+        const color = m.isFc ? OVC.fc : (m.value > m.budget ? OVC.red : OVC.blue);
+        const outline = m.isFc ? ` stroke="${OVC.blue}" stroke-width="1"` : '';
+        s += m.value >= 0 ? `<path d="${ovColPath(cx - bw / 2 + 0.5, y(m.value) + 0.5, bw - 1, y(0))}" fill="${color}"${outline}/>`
+          : `<rect x="${cx - bw / 2}" y="${y(0)}" width="${bw}" height="${Math.max(y(m.value) - y(0), 1)}" fill="${color}"${outline}/>`;
+        if (i % showEvery === 0) s += ovTx(cx, bottom + 17, 'm', ovFit(mN[i], 11, band * showEvery - 2), 11, OVC.muted);
+        const diff = m.value - m.budget, pct = m.budget ? diff / m.budget * 100 : null;
+        s += `<rect x="${left + band * i}" y="${top}" width="${band}" height="${bottom - top}" fill="transparent"${ovTipAttr([
+          mN[i], `${ovT(m.isFc ? 'tip_fc' : 'tip_actual')}: ${ovFull(m.value)}`, `${ovT('tip_budget')}: ${ovFull(m.budget)}`,
+          `${ovT('tip_var')}: ${ovFull(diff, true)} (${ovPct(pct, true)})`])}/>`;
+      });
+      const pts = M.monthly.map((m, i) => `${left + band * i + band / 2},${y(m.budget)}`).join(' ');
+      s += `<polyline points="${pts}" fill="none" stroke="${OVC.budget}" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round" pointer-events="none"/>`;
+      M.monthly.forEach((m, i) => { s += `<circle cx="${left + band * i + band / 2}" cy="${y(m.budget)}" r="3.5" fill="${OVC.budget}" stroke="#ffffff" stroke-width="1.5" pointer-events="none"/>`; });
+      return ovSvg(W, H, ovT('ch_monthly'), s);
+    }
+
+    // ---------------- YTD variance by account (diverging bars) ----------------
+    function ovVarianceSvg(M, W) {
+      const mN = getMonthNames(), rtl = currentLang === 'ar';
+      const U = ovState.units === 'auto' ? ovUnit(Math.max(1, ...M.rows.map(r => Math.abs(r.ytd.variance)))) : M.U;
+      const sorted = M.rows.filter(r => r.ytd.variance !== 0).sort((a, b) => Math.abs(b.ytd.variance) - Math.abs(a.ytd.variance));
+      const topN = sorted.slice(0, 10), rest = sorted.slice(10);
+      const items = topN.map(r => ({ name: r.a.accountName || r.a.accountNo, v: r.ytd.variance, b: r.ytd.budget, act: r.ytd.actual, pct: r.ytd.pct, no: r.a.accountNo }));
+      if (rest.length) {
+        const o = rest.reduce((s, r) => { s.v += r.ytd.variance; s.b += r.ytd.budget; s.act += r.ytd.actual; return s; }, { v: 0, b: 0, act: 0 });
+        items.push({ name: ovT('other', { n: rest.length }), v: o.v, b: o.b, act: o.act, pct: o.b ? o.v / o.b * 100 : null, other: true });
+      }
+      const hdr = ovHeader(W, ovT('ch_var'), ovT('ch_var_sub', { m0: mN[0], m: mN[M.p] }), [{ label: ovT('lg_overb'), color: OVC.red }, { label: ovT('lg_underb'), color: OVC.blue }]);
+      const rowH = 28, top = hdr.top + 4, H = top + Math.max(items.length, 1) * rowH + 12;
+      const labelW = Math.min(Math.max(40, ...items.map(it => ovTextW(it.name, 12))) + 6, W * 0.36);
+      // Account names sit on the reading side: left in English, right in Arabic
+      const plotL = rtl ? 6 : labelW + 12, plotR = rtl ? W - labelW - 12 : W - 6;
+      const lo = Math.min(0, ...items.map(i => i.v));
+      let hi = Math.max(0, ...items.map(i => i.v));
+      if (hi - lo < 1e-9) hi = lo + 1;
+      // Room for the value labels at both bar ends, so they never run into the account names
+      const lblW = (sign) => Math.max(0, ...items.filter(i => Math.sign(i.v) === sign).map(i => ovTextW(ovFmt(i.v, U, true), 11.5)));
+      const negW = lblW(-1), posW = lblW(1);
+      const a0 = plotL + (negW ? negW + 10 : 0), a1 = plotR - (posW ? posW + 10 : 0);
+      const x = (v) => a0 + (v - lo) / (hi - lo) * (a1 - a0);
+      let s = hdr.svg;
+      s += `<line x1="${x(0)}" y1="${top - 4}" x2="${x(0)}" y2="${top + items.length * rowH}" stroke="${OVC.axis}" stroke-width="1"/>`;
+      items.forEach((it, i) => {
+        const yy = top + i * rowH, bh = 16, by = yy + (rowH - bh) / 2;
+        s += ovTx(rtl ? W - 2 : labelW, yy + rowH / 2 + 4, 'r', ovFit(it.name, 12, labelW - 4), 12, it.other ? OVC.muted : OVC.ink);
+        s += `<path d="${ovHBarPath(x(0), x(it.v), by, bh)}" fill="${it.v > 0 ? OVC.red : OVC.blue}"/>`;
+        s += ovTx(it.v >= 0 ? x(it.v) + 5 : x(it.v) - 5, yy + rowH / 2 + 4, it.v >= 0 ? 'l' : 'r', ovFmt(it.v, U, true), 11.5, OVC.ink);
+        s += `<rect x="0" y="${yy}" width="${W}" height="${rowH}" fill="transparent"${ovTipAttr([
+          (it.no ? it.no + ' · ' : '') + it.name, `${ovT('tip_ytd_b')}: ${ovFull(it.b)}`, `${ovT('tip_ytd_a')}: ${ovFull(it.act)}`,
+          `${ovT('tip_var')}: ${ovFull(it.v, true)} (${ovPct(it.pct, true)})`])}/>`;
+      });
+      return ovSvg(W, H, ovT('ch_var'), s);
+    }
+
+    // ---------------- Budget to forecast bridge (waterfall) ----------------
+    function ovBridgeSvg(M, W) {
+      const U = M.U, T = M.T;
+      const contrib = M.rows.map(r => ({ name: r.a.accountName || r.a.accountNo, no: r.a.accountNo, v: r.eac.eac - r.fy })).filter(c => Math.abs(c.v) >= 0.005)
+        .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+      const maxSteps = W < 420 ? 3 : W < 620 ? 4 : 6;
+      const shown = contrib.slice(0, maxSteps), restV = contrib.slice(maxSteps).reduce((s, c) => s + c.v, 0);
+      if (contrib.length > maxSteps && Math.abs(restV) >= 0.005) shown.push({ name: ovT('other', { n: contrib.length - maxSteps }), v: restV, other: true });
+      let run = T.fy;
+      const steps = [{ name: ovT('br_budget'), kind: 'total', from: 0, to: T.fy }];
+      shown.forEach(c => { steps.push({ name: c.name, no: c.no, kind: c.v > 0 ? 'inc' : 'dec', from: run, to: run + c.v, v: c.v }); run += c.v; });
+      steps.push({ name: ovT('br_fc'), kind: 'total', from: 0, to: T.eac });
+      const hdr = ovHeader(W, ovT('ch_bridge'), ovT('ch_bridge_sub', { a: ovFmt(T.fy, U), b: ovFmt(T.eac, U) }), [
+        { label: ovT('lg_total'), color: OVC.total }, { label: ovT('lg_inc'), color: OVC.red }, { label: ovT('lg_dec'), color: OVC.blue }]);
+      const levels = steps.flatMap(st => st.kind === 'total' ? [st.to] : [st.from, st.to]);
+      const lo0 = Math.min(...levels), hi0 = Math.max(...levels), spanV = Math.max(hi0 - lo0, Math.abs(hi0) * 0.02, 1);
+      // The axis starts near the lowest level so the steps stay readable; the total columns show a break mark
+      const sc = ovNice(Math.max(0, lo0 - spanV * 0.6), hi0 + spanV * 0.25, 5);
+      const broken = sc.min > 0;
+      const axisW = Math.max(...[sc.min, sc.max].map(v => ovTextW(ovFmt(v, U), 11))) + 10;
+      const left = axisW + 4, right = 6, top = hdr.top + 14, H = top + 232, bottom = H - 46;
+      const y = (v) => bottom - (Math.max(v, sc.min) - sc.min) / (sc.max - sc.min) * (bottom - top);
+      const band = (W - left - right) / steps.length, bw = Math.min(42, band * 0.62);
+      let s = hdr.svg;
+      for (let v = sc.min; v <= sc.max + sc.step / 2; v += sc.step) {
+        s += `<line x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}" stroke="${OVC.grid}" stroke-width="1"/>`;
+        s += ovTx(left - 6, y(v) + 4, 'r', ovFmt(v, U), 11, OVC.muted);
+      }
+      steps.forEach((st, i) => {
+        const cx = left + band * i + band / 2, x0 = cx - bw / 2;
+        const yTop = y(Math.max(st.from, st.to)), yBot = st.kind === 'total' ? bottom : y(Math.min(st.from, st.to));
+        const color = st.kind === 'total' ? OVC.total : st.kind === 'inc' ? OVC.red : OVC.blue;
+        s += st.kind === 'total' ? `<path d="${ovColPath(x0, yTop, bw, bottom)}" fill="${color}"/>`
+          : `<rect x="${x0}" y="${yTop}" width="${bw}" height="${Math.max(yBot - yTop, 1.5)}" rx="3" fill="${color}"/>`;
+        if (st.kind === 'total' && broken) {
+          const zy = bottom - 12, seg = bw / 4;
+          s += `<polyline points="${x0 - 1},${zy + 3} ${x0 + seg},${zy - 3} ${x0 + 2 * seg},${zy + 3} ${x0 + 3 * seg},${zy - 3} ${x0 + bw + 1},${zy + 3}" fill="none" stroke="#ffffff" stroke-width="3"/>`;
+        }
+        if (i < steps.length - 1) s += `<line x1="${x0 + bw}" y1="${y(st.to)}" x2="${x0 + band}" y2="${y(st.to)}" stroke="${OVC.axis}" stroke-width="1" stroke-dasharray="3 3"/>`;
+        const lbl = st.kind === 'total' ? ovFmt(st.to, U) : ovFmt(st.v, U, true);
+        s += ovTx(cx, yTop - 6, 'm', lbl, 11.5, OVC.ink, st.kind === 'total' ? ' font-weight="700"' : '');
+        ovWrap2(st.name, 11, band - 4).forEach((ln, k) => { s += ovTx(cx, bottom + 16 + k * 13, 'm', ln, 11, OVC.muted); });
+        s += `<rect x="${left + band * i}" y="${top - 10}" width="${band}" height="${bottom - top + 42}" fill="transparent"${ovTipAttr([
+          (st.no ? st.no + ' · ' : '') + st.name, st.kind === 'total' ? ovFull(st.to) : ovFull(st.v, true)])}/>`;
+      });
+      return ovSvg(W, H, ovT('ch_bridge'), s);
+    }
+
+    // ---------------- Budget used by department ----------------
+    function ovDeptSvg(M, W) {
+      const rtl = currentLang === 'ar', map = {};
+      M.rows.forEach(r => { const d = r.a.department || '-'; const o = map[d] || (map[d] = { b: 0, a: 0 }); o.b += r.ytd.budget; o.a += r.ytd.actual; });
+      const pctOf = (o) => o.b ? o.a / o.b * 100 : (o.a > 0 ? Infinity : 0);
+      let items = Object.keys(map).map(d => ({ name: d, b: map[d].b, a: map[d].a, pct: pctOf(map[d]) })).sort((x, y) => y.b - x.b);
+      if (items.length > 8) {
+        const rest = items.slice(7), o = rest.reduce((s, i) => { s.b += i.b; s.a += i.a; return s; }, { b: 0, a: 0 });
+        items = items.slice(0, 7).concat([{ name: ovT('other_d', { n: rest.length }), b: o.b, a: o.a, pct: pctOf(o), other: true }]);
+      }
+      const hdr = ovHeader(W, ovT('ch_dept'), ovT('ch_dept_sub'), [{ label: ovT('lg_within'), color: OVC.blue }, { label: ovT('lg_overd'), color: OVC.red }, { label: ovT('lg_line'), color: OVC.ink, kind: 'marker' }]);
+      const rowH = 30, top = hdr.top + 6, H = top + Math.max(items.length, 1) * rowH + 8;
+      const labelW = Math.min(Math.max(40, ...items.map(i => ovTextW(i.name, 12))) + 6, W * 0.34);
+      const valW = 50;
+      // English: name | bar grows right | value.  Arabic: value | bar grows left | name
+      const b0 = rtl ? W - labelW - 12 : labelW + 12, b1 = rtl ? valW : W - valW;
+      const finite = items.map(i => i.pct).filter(isFinite);
+      const maxPct = Math.min(Math.max(150, ...finite.map(p => p * 1.08)), 300);
+      const x = (p) => b0 + Math.min(p, maxPct) / maxPct * (b1 - b0);
+      let s = hdr.svg;
+      items.forEach((it, i) => {
+        const yy = top + i * rowH, bh = 12, by = yy + (rowH - bh) / 2, ty = yy + rowH / 2 + 4;
+        const over = it.pct > 100, shownPct = isFinite(it.pct) ? it.pct : maxPct;
+        s += ovTx(rtl ? W - 2 : labelW, ty, 'r', ovFit(it.name, 12, labelW - 4), 12, it.other ? OVC.muted : OVC.ink);
+        s += `<rect x="${Math.min(b0, b1)}" y="${by}" width="${Math.abs(b1 - b0)}" height="${bh}" rx="6" fill="${OVC.track}"/>`;
+        s += `<path d="${ovHBarPath(b0, x(shownPct), by, bh)}" fill="${over ? OVC.red : OVC.blue}"/>`;
+        s += `<line x1="${x(100)}" y1="${by - 4}" x2="${x(100)}" y2="${by + bh + 4}" stroke="${OVC.ink}" stroke-width="2"/>`;
+        s += ovTx(rtl ? b1 - 8 : b1 + 8, ty, rtl ? 'r' : 'l', isFinite(it.pct) ? ovLtr(Math.round(it.pct) + '%') : '-', 12, over ? OVC.redInk : OVC.ink, ' font-weight="700"');
+        s += `<rect x="0" y="${yy}" width="${W}" height="${rowH}" fill="transparent"${ovTipAttr([it.name, `${ovT('tip_ytd_b')}: ${ovFull(it.b)}`, `${ovT('tip_ytd_a')}: ${ovFull(it.a)}`, `${ovT('tip_var')}: ${ovFull(it.a - it.b, true)}`])}/>`;
+      });
+      return ovSvg(W, H, ovT('ch_dept'), s);
+    }
+
+    // ---------------- Material variances table ----------------
+    function ovMaterialRows(M) {
+      return M.rows.filter(r => ytdMaterialDirection(r.ytd)).sort((a, b) => Math.abs(b.ytd.variance) - Math.abs(a.ytd.variance)).slice(0, 10);
+    }
+    function ovTableHtml(M, forClipboard) {
+      const rows = ovMaterialRows(M), U = M.U, rtl = currentLang === 'ar';
+      if (!rows.length) return forClipboard ? '' : `<div class="ov-empty-row">${ovE(ovT('none'))}</div>`;
+      const F = 'font-family:Segoe UI,Arial,sans-serif;font-size:13px;';
+      const cell = forClipboard ? `padding:6px 10px;border-bottom:1px solid #e2e8f0;${F}` : '';
+      const head = forClipboard ? `padding:6px 10px;background:#e2e8f0;font-weight:700;border-bottom:2px solid #94a3b8;${F}` : '';
+      const al = rtl ? 'right' : 'left', alN = rtl ? 'left' : 'right';
+      const th = (txt, num) => `<th style="${head}text-align:${num ? alN : al}">${ovE(txt)}</th>`;
+      let h = `<table class="ov-table" dir="${rtl ? 'rtl' : 'ltr'}"${forClipboard ? ' style="border-collapse:collapse;"' : ''}><thead><tr>${th(ovT('c_acc'))}${th(ovT('c_var'), true)}${th(ovT('c_pct'), true)}${th(ovT('c_cause'))}${th(ovT('c_note'))}</tr></thead><tbody>`;
+      rows.forEach(r => {
+        const v = r.ytd.variance, col = v > 0 ? OVC.redInk : OVC.blueInk;
+        h += `<tr><td style="${cell}text-align:${al}">${ovE(r.a.accountNo + ' · ' + (r.a.accountName || ''))}</td>` +
+          `<td style="${cell}text-align:${alN};color:${col};font-weight:700;white-space:nowrap">${ovE(ovFmt(v, U, true))}</td>` +
+          `<td style="${cell}text-align:${alN};color:${col};white-space:nowrap">${ovE(ovPct(r.ytd.pct, true))}</td>` +
+          `<td style="${cell}text-align:${al}">${ovE(xlVType(r.a))}</td>` +
+          `<td style="${cell}text-align:${al}">${ovE(r.a.explanatoryNote || '')}</td></tr>`;
+      });
+      return h + '</tbody></table>';
+    }
+
+    // ---------------- Copy / download ----------------
+    const OV_ICON_COPY = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';
+    const OV_ICON_DL = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>';
+    function ovSvgToPng(svgEl) {
+      return new Promise((resolve, reject) => {
+        const W = +svgEl.getAttribute('width'), H = +svgEl.getAttribute('height');
+        const clone = svgEl.cloneNode(true);
+        clone.querySelectorAll('[data-ovtip]').forEach(el => el.removeAttribute('data-ovtip'));
+        const xml = new XMLSerializer().serializeToString(clone);
+        const img = new Image();
+        img.onload = () => {
+          const k = 2, c = document.createElement('canvas');
+          c.width = Math.round(W * k); c.height = Math.round(H * k);
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+          ctx.scale(k, k); ctx.drawImage(img, 0, 0, W, H);
+          c.toBlob(b => (b ? resolve(b) : reject(new Error('png'))), 'image/png');
+        };
+        img.onerror = () => reject(new Error('svg'));
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+      });
+    }
+    function ovDownloadBlob(blob, name) {
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+    async function ovCopyChart(cardId, fileName) {
+      const svgEl = document.querySelector(`#${cardId} .ov-svg svg`);
+      if (!svgEl) return;
+      try {
+        if (!navigator.clipboard || typeof ClipboardItem === 'undefined') throw new Error('no clipboard');
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': ovSvgToPng(svgEl) })]);
+        showToast(ovT('copied'), 2000);
+      } catch (e) {
+        try { ovDownloadBlob(await ovSvgToPng(svgEl), fileName + '.png'); showToast(ovT('copy_failed'), 5000); } catch (e2) { /* nothing else to do */ }
+      }
+    }
+    async function ovDownloadChart(cardId, fileName) {
+      const svgEl = document.querySelector(`#${cardId} .ov-svg svg`);
+      if (svgEl) ovDownloadBlob(await ovSvgToPng(svgEl), fileName + '.png');
+    }
+    async function ovCopyTable() {
+      const M = withRenderCache(ovModel); if (!M) return;
+      const html = ovTableHtml(M, true);
+      if (!html) return;
+      const rows = ovMaterialRows(M);
+      const text = [[ovT('c_acc'), ovT('c_var'), ovT('c_pct'), ovT('c_cause'), ovT('c_note')].join('\t')]
+        .concat(rows.map(r => [r.a.accountNo + ' · ' + (r.a.accountName || ''), ovFmt(r.ytd.variance, M.U, true), ovPct(r.ytd.pct, true), xlVType(r.a), r.a.explanatoryNote || ''].join('\t'))).join('\n');
+      const titled = `<div dir="${currentLang === 'ar' ? 'rtl' : 'ltr'}"><div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px;font-weight:700;margin-bottom:6px">${ovE(ovT('tbl'))}</div>${html}</div>`;
+      try {
+        if (!navigator.clipboard || typeof ClipboardItem === 'undefined') throw new Error('no clipboard');
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([titled], { type: 'text/html' }), 'text/plain': new Blob([text], { type: 'text/plain' }) })]);
+        showToast(ovT('copied'), 2000);
+      } catch (e) {
+        const box = document.createElement('div');
+        box.contentEditable = 'true'; box.style.position = 'absolute'; box.style.left = '-9999px'; box.innerHTML = titled;
+        document.body.appendChild(box);
+        const range = document.createRange(); range.selectNodeContents(box);
+        const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        try { document.execCommand('copy'); showToast(ovT('copied'), 2000); } finally { sel.removeAllRanges(); box.remove(); }
+      }
+    }
+    function ovActions(cardId, fileName) {
+      const c = ovE(ovT('copy')), d = ovE(ovT('download'));
+      return `<div class="ov-actions"><button class="ov-act" title="${c}" aria-label="${c}" onclick="ovCopyChart('${cardId}','${fileName}')">${OV_ICON_COPY}</button><button class="ov-act" title="${d}" aria-label="${d}" onclick="ovDownloadChart('${cardId}','${fileName}')">${OV_ICON_DL}</button></div>`;
+    }
+
+    // ---------------- Render ----------------
+    function ovSetFilter(key, val) {
+      if (key === 'period') ovState.period = val === '' ? null : Number(val);
+      else ovState[key] = val;
+      renderOverview();
+    }
+    function renderOverview() {
+      const sec = document.getElementById('tab-overview');
+      if (!sec || !sec.classList.contains('active')) return; // drawn when the tab is open (charts need real widths)
+      if (!__rc) return withRenderCache(renderOverview);
+      const M = ovModel();
+      const mN = getMonthNames();
+      if (!M) { sec.innerHTML = `<div class="card ov-empty">${ovE(ovT('empty'))}</div>`; return; }
+      const lastData = getLastActualMonthIndex();
+      const periodOpts = mN.slice(0, lastData + 1).map((m, i) => `<option value="${i}"${i === M.p ? ' selected' : ''}>${ovE(m)}</option>`).join('');
+      const deptOpts = `<option value="ALL">${ovE(ovT('all_depts'))}</option>` + M.depts.map(d => `<option value="${ovE(d)}"${d === ovState.dept ? ' selected' : ''}>${ovE(d)}</option>`).join('');
+      const unitOpts = ['auto', 'u', 'k', 'm', 'b'].map(u => `<option value="${u}"${u === ovState.units ? ' selected' : ''}>${ovE(ovT('u_' + u))}</option>`).join('');
+      const mat = appState.materiality;
+      // Keep the current height while redrawing so the page does not jump (e.g. after changing a filter)
+      if (sec.offsetHeight) sec.style.minHeight = sec.offsetHeight + 'px';
+      sec.innerHTML = `
+        <div class="ov-head">
+          <div><div class="ov-title">${ovE(ovT('title'))}</div><div class="ov-sub">${ovE(ovT('sub', { m0: mN[0], m: mN[M.p], y: M.year }))}</div></div>
+          <div class="ov-filters">
+            <label class="form-group"><span>${ovE(ovT('f_period'))}</span><select class="form-control" onchange="ovSetFilter('period', this.value)">${periodOpts}</select></label>
+            <label class="form-group"><span>${ovE(ovT('f_dept'))}</span><select class="form-control" onchange="ovSetFilter('dept', this.value)">${deptOpts}</select></label>
+            <label class="form-group"><span>${ovE(ovT('f_units'))}</span><select class="form-control" onchange="ovSetFilter('units', this.value)">${unitOpts}</select></label>
+          </div>
+        </div>
+        <div class="ov-card" id="ov-c-kpi">${ovActions('ov-c-kpi', 'budget-kpis')}<div class="ov-svg"></div></div>
+        <div class="ov-grid-a">
+          <div class="ov-card" id="ov-c-monthly">${ovActions('ov-c-monthly', 'monthly-spend-vs-budget')}<div class="ov-svg"></div></div>
+          <div class="ov-card" id="ov-c-dept">${ovActions('ov-c-dept', 'budget-used-by-department')}<div class="ov-svg"></div></div>
+        </div>
+        <div class="ov-grid2">
+          <div class="ov-card" id="ov-c-var">${ovActions('ov-c-var', 'ytd-variance-by-account')}<div class="ov-svg"></div></div>
+          <div class="ov-card" id="ov-c-bridge">${ovActions('ov-c-bridge', 'budget-to-forecast-bridge')}<div class="ov-svg"></div></div>
+        </div>
+        <div class="ov-card" id="ov-c-table">
+          <div class="ov-actions"><button class="ov-act" title="${ovE(ovT('copy'))}" aria-label="${ovE(ovT('copy'))}" onclick="ovCopyTable()">${OV_ICON_COPY}</button></div>
+          <div class="ov-card-title">${ovE(ovT('tbl'))}</div>
+          <div class="ov-card-sub">${ovE(ovT('tbl_sub', { pct: mat.pct, amt: Number(mat.amount).toLocaleString('en-US') }))}</div>
+          <div class="ov-table-wrap">${ovTableHtml(M, false)}</div>
+        </div>`;
+      const draw = (id, fnSvg) => { const box = document.querySelector(`#${id} .ov-svg`); if (box) box.innerHTML = fnSvg(M, Math.max(260, Math.floor(box.clientWidth))); };
+      draw('ov-c-kpi', ovKpiSvg);
+      draw('ov-c-monthly', ovMonthlySvg);
+      draw('ov-c-var', ovVarianceSvg);
+      draw('ov-c-bridge', ovBridgeSvg);
+      draw('ov-c-dept', ovDeptSvg);
+      sec.style.minHeight = '';
+      ovState.drawnW = sec.clientWidth; // width the charts were sized for (a different width triggers a redraw)
+    }
+
+    // Hover details for chart marks
+    function initOverviewInteractions() {
+      const tip = document.getElementById('floating-tooltip');
+      const sec = document.getElementById('tab-overview');
+      if (!tip || !sec) return;
+      const hide = () => { if (tip.dataset.ov === '1') { tip.style.display = 'none'; tip.dataset.ov = ''; } };
+      sec.addEventListener('mousemove', (e) => {
+        const el = e.target.closest && e.target.closest('[data-ovtip]');
+        if (!el) { hide(); return; }
+        const lines = el.getAttribute('data-ovtip').split('\n');
+        tip.innerHTML = `<div class="tt-title">${escapeHtml(lines[0])}</div>${lines.slice(1).map(l => `<div>${escapeHtml(l)}</div>`).join('')}`;
+        tip.style.display = 'block'; tip.dataset.ov = '1';
+        positionTooltip(e, tip);
+      });
+      sec.addEventListener('mouseleave', hide);
+      // Redraw when the dashboard's own width changes (window resize, scrollbar appearing, late layout);
+      // height-only changes such as a mobile address bar are ignored
+      let rt = null;
+      const check = () => {
+        const w = sec.clientWidth;
+        if (!w || w === ovState.drawnW) return;
+        clearTimeout(rt); rt = setTimeout(() => renderOverview(), 120);
+      };
+      if (window.ResizeObserver) new ResizeObserver(check).observe(sec);
+      window.addEventListener('resize', check);
+    }
+
+    // ============================================================================
+    // 17. EXCEL MANAGEMENT DASHBOARD SHEET
+    // A real, interactive first sheet: dropdown cells (period, department) drive formulas over a
+    // hidden data sheet, and two native Excel charts read those formulas. Parts the embedded
+    // SheetJS Community Edition cannot write (styles, dropdowns, conditional formats, charts)
+    // are added to the .xlsx package directly.
+    // ============================================================================
+    const XLD = {
+      en: {
+        dash: '0_Dashboard', data: 'Data',
+        title: 'Budget performance dashboard · expenses',
+        sub: 'Basis: original budget · full-year forecast from the latest rolling forecast',
+        through: 'Period through', dept: 'Department', allDepts: 'All departments',
+        kYtdB: 'YTD budget', kYtdA: 'YTD actual', kVar: 'YTD variance', kEac: 'Full-year forecast (EAC)',
+        fyPrefix: 'Full-year budget ', ofFy: ' of full-year budget', vsYtd: ' vs YTD budget', vsBud: ' vs budget',
+        chMonthly: 'Monthly spend vs budget', chVar: 'YTD variance by account',
+        rangeFn: (m0) => `${m0} to `,
+        sBudget: 'Budget', sWithin: 'Actual within budget', sOver: 'Actual over budget', sFc: 'Forecast',
+        sOverB: 'Over budget', sUnderB: 'Under budget',
+        tblTitle: 'Accounts with the largest year-to-date variances',
+        cAcc: 'Account', cYtdB: 'YTD budget', cYtdA: 'YTD actual', cVar: 'Variance', cVarP: 'Variance %',
+        cFy: 'Full-year budget', cEac: 'Forecast (EAC)', cEacV: 'EAC variance', cSt: 'Status',
+        total: 'Total', stOk: 'On track', stMatO: 'Material overspend', stMatU: 'Material underspend', stOver: 'Over budget',
+        hNo: 'Account number', hName: 'Account name', hDept: 'Department', hBud: 'Budget', hAct: 'Actual',
+        h39: 'Forecast 3+9', h66: 'Forecast 6+6', h93: 'Forecast 9+3', hCom: 'Open commitments', hNat: 'Variance nature',
+        hInc: 'Included', hYtdB: 'YTD budget', hYtdA: 'YTD actual', hYtdV: 'YTD variance', hYtdP: 'YTD variance %',
+        hFy: 'Full-year budget', hEac: 'Forecast (EAC)', hRank: 'Sort key', hSt: 'Status code',
+        hMonths: 'Months', hDepts: 'Departments', hCtl: 'Settings', hMonthly: 'Monthly chart', hTop: 'Variance chart'
+      },
+      ar: {
+        dash: '0_لوحة_المؤشرات', data: 'البيانات',
+        title: 'لوحة أداء الميزانية · المصروفات',
+        sub: 'الأساس: الميزانية الأصلية · توقع السنة الكاملة من أحدث توقعات مرحلية',
+        through: 'الفترة حتى', dept: 'القسم', allDepts: 'جميع الأقسام',
+        kYtdB: 'الميزانية حتى تاريخه', kYtdA: 'الصرف الفعلي حتى تاريخه', kVar: 'الانحراف حتى تاريخه', kEac: 'توقع السنة الكاملة (EAC)',
+        fyPrefix: 'ميزانية السنة الكاملة ', ofFy: ' من ميزانية السنة', vsYtd: ' عن ميزانية الفترة', vsBud: ' عن الميزانية',
+        chMonthly: 'الصرف الشهري مقابل الميزانية', chVar: 'الانحراف حتى تاريخه حسب الحساب',
+        rangeFn: (m0) => `من ${m0} إلى `,
+        sBudget: 'الميزانية', sWithin: 'فعلي ضمن الميزانية', sOver: 'فعلي متجاوز للميزانية', sFc: 'توقع',
+        sOverB: 'تجاوز', sUnderB: 'وفر',
+        tblTitle: 'الحسابات ذات الانحرافات الأكبر حتى تاريخه',
+        cAcc: 'الحساب', cYtdB: 'الميزانية حتى تاريخه', cYtdA: 'الفعلي حتى تاريخه', cVar: 'الانحراف', cVarP: 'نسبة الانحراف',
+        cFy: 'ميزانية السنة', cEac: 'التوقع (EAC)', cEacV: 'انحراف التوقع', cSt: 'الحالة',
+        total: 'الإجمالي', stOk: 'ضمن الخطة', stMatO: 'تجاوز جوهري', stMatU: 'وفر جوهري', stOver: 'متجاوز',
+        hNo: 'رقم الحساب', hName: 'اسم الحساب', hDept: 'القسم', hBud: 'الميزانية', hAct: 'الفعلي',
+        h39: 'توقعات 3+9', h66: 'توقعات 6+6', h93: 'توقعات 9+3', hCom: 'الالتزامات القائمة', hNat: 'طبيعة الانحراف',
+        hInc: 'مشمول', hYtdB: 'الميزانية حتى تاريخه', hYtdA: 'الفعلي حتى تاريخه', hYtdV: 'الانحراف حتى تاريخه', hYtdP: 'نسبة الانحراف',
+        hFy: 'ميزانية السنة', hEac: 'التوقع (EAC)', hRank: 'مفتاح الترتيب', hSt: 'رمز الحالة',
+        hMonths: 'الأشهر', hDepts: 'الأقسام', hCtl: 'الإعدادات', hMonthly: 'بيانات الرسم الشهري', hTop: 'بيانات رسم الانحراف'
+      }
+    };
+
+    function xlColName(n) { let s = ''; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; }
+    function xlEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function xlQ(s) { return `'${String(s).replace(/'/g, "''")}'`; }
+
+    // Display unit for the dashboard, chosen from the size of the full-year budget
+    function xlUnitBase(maxAbs) {
+      if (maxAbs >= 1e9) return '#,##0.0,,,"B"';
+      if (maxAbs >= 1e6) return '#,##0.0,,"M"';
+      if (maxAbs >= 1e4) return '#,##0.0,"K"';
+      return '#,##0';
+    }
+
+    // Column layout of the hidden data sheet (1-based)
+    const XD = {
+      NO: 1, NAME: 2, DEPT: 3, B: 4, A: 16, F39: 28, F66: 40, F93: 52, COM: 64, NAT: 65,
+      INC: 66, YB: 67, YA: 68, YV: 69, YP: 70, FY: 71, EAC: 72, RANK: 73, ST: 74,
+      MON: 77, DEP: 78, CTL: 79, MT: 81, TOPN: 88, TOPO: 89, TOPU: 90, TOPP: 91
+    };
+
+    // Plain JS versions of the sheet formulas, used for the values Excel shows before it recalculates
+    function xlDashCalc(model, p, deptSel) {
+      const verArr = (a) => p >= 9 ? a.f93 : p >= 6 ? a.f66 : p >= 3 ? a.f39 : a.orig;
+      const pct = (model.materiality.pct || 0) / 100, amt = model.materiality.amount || 0;
+      return model.accounts.map((a, i) => {
+        const inc = (deptSel === null || a.dept === deptSel) ? 1 : 0;
+        let yb = 0, ya = 0, eac = 0;
+        for (let m = 0; m < 12; m++) {
+          if (m < p) { yb += a.orig[m]; ya += a.actual[m]; eac += a.actual[m]; } else { eac += verArr(a)[m]; }
+        }
+        const yv = ya - yb, fy = a.orig.reduce((s, v) => s + v, 0);
+        const material = yv !== 0 && Math.abs(yv) >= amt && (yb === 0 || Math.abs(yv) / yb >= pct);
+        const st = inc ? (material ? (yv > 0 ? 1 : 2) : (yv > 0 ? 3 : 0)) : 0;
+        const row = i + 2;
+        return { a, inc, yb, ya, yv, yp: yb === 0 ? '' : yv / yb, fy, eac, rank: inc ? Math.abs(yv) + row / 1e9 : -1, st, row };
+      });
+    }
+
+    // Adds the dashboard placeholder (must be the first sheet) and returns a context for later steps
+    function xlDashBegin(wb, model) {
+      if (!model.accounts.length || model.lastClosed < 0 || !(typeof XLSX !== 'undefined' && XLSX.CFB)) return null;
+      const S = XLD[model.lang === 'ar' ? 'ar' : 'en'];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['']]), S.dash);
+      return { model, S };
+    }
+
+    // Adds the hidden data sheet (last sheet) and builds every XML part for the post-processing step
+    function xlDashFinish(wb, ctx) {
+      if (!ctx) return null;
+      const { model, S } = ctx;
+      const n = model.accounts.length, last = n + 1, L = model.lastClosed + 1;
+      const mN = model.monthNames, D = xlQ(S.dash), DA = xlQ(S.data);
+      const col = xlColName;
+      const rng = (c) => `${col(c)}$2:${col(c)}${last}`;
+      const ws = {};
+      const put = (r, c, cell) => { ws[col(c) + r] = cell; };
+      const str = (v) => ({ t: 's', v: String(v) });
+      const num = (v) => ({ t: 'n', v: Number(v) || 0 });
+      const fn = (f, v) => (v === 'NA') ? { t: 'e', v: 0x2A, f } : (typeof v === 'string' ? { t: 's', v, f } : { t: 'n', v, f });
+
+      // Departments list ("All" first) and default selections
+      const depts = [...new Set(model.accounts.map(a => a.dept))];
+      const p = L, deptSel = null;
+      const calc = xlDashCalc(model, p, deptSel);
+
+      // ---- header row
+      const heads = { [XD.NO]: S.hNo, [XD.NAME]: S.hName, [XD.DEPT]: S.hDept, [XD.COM]: S.hCom, [XD.NAT]: S.hNat, [XD.INC]: S.hInc,
+        [XD.YB]: S.hYtdB, [XD.YA]: S.hYtdA, [XD.YV]: S.hYtdV, [XD.YP]: S.hYtdP, [XD.FY]: S.hFy, [XD.EAC]: S.hEac, [XD.RANK]: S.hRank, [XD.ST]: S.hSt,
+        [XD.MON]: S.hMonths, [XD.DEP]: S.hDepts, [XD.CTL]: S.hCtl, [XD.MT]: S.hMonthly, [XD.TOPN]: S.hTop };
+      for (let m = 0; m < 12; m++) {
+        heads[XD.B + m] = `${S.hBud} ${mN[m]}`; heads[XD.A + m] = `${S.hAct} ${mN[m]}`;
+        heads[XD.F39 + m] = `${S.h39} ${mN[m]}`; heads[XD.F66 + m] = `${S.h66} ${mN[m]}`; heads[XD.F93 + m] = `${S.h93} ${mN[m]}`;
+      }
+      Object.keys(heads).forEach(c => put(1, +c, str(heads[c])));
+
+      // ---- one row per account
+      const C = (c, r) => `${col(c)}${r}`;
+      calc.forEach((k) => {
+        const r = k.row, a = k.a;
+        put(r, XD.NO, str(a.no)); put(r, XD.NAME, str(a.name)); put(r, XD.DEPT, str(a.dept));
+        for (let m = 0; m < 12; m++) {
+          put(r, XD.B + m, num(a.orig[m])); put(r, XD.A + m, num(a.actual[m]));
+          put(r, XD.F39 + m, num(a.f39[m])); put(r, XD.F66 + m, num(a.f66[m])); put(r, XD.F93 + m, num(a.f93[m]));
+        }
+        put(r, XD.COM, num(a.commit)); put(r, XD.NAT, str(a.nature));
+        const bR = `${C(XD.B, r)}:${C(XD.B + 11, r)}`, aR = `${C(XD.A, r)}:${C(XD.A + 11, r)}`;
+        const idxB = `(COLUMN(${bR})-COLUMN(${C(XD.B, r)})+1)`, idxA = `(COLUMN(${aR})-COLUMN(${C(XD.A, r)})+1)`;
+        const ctl = (i) => `${col(XD.CTL)}${i}`;
+        put(r, XD.INC, fn(`IF(OR(${ctl(4)}=${ctl(5)},${C(XD.DEPT, r)}=${ctl(4)}),1,0)`, k.inc));
+        put(r, XD.YB, fn(`SUMPRODUCT(${bR}*(${idxB}<=${ctl(2)}))`, k.yb));
+        put(r, XD.YA, fn(`SUMPRODUCT(${aR}*(${idxA}<=${ctl(2)}))`, k.ya));
+        put(r, XD.YV, fn(`${C(XD.YA, r)}-${C(XD.YB, r)}`, k.yv));
+        put(r, XD.YP, fn(`IF(${C(XD.YB, r)}=0,"",${C(XD.YV, r)}/${C(XD.YB, r)})`, k.yp));
+        put(r, XD.FY, fn(`SUM(${bR})`, k.fy));
+        put(r, XD.EAC, fn(`SUMPRODUCT(${aR}*(${idxA}<=${ctl(2)}))+SUMPRODUCT(CHOOSE(${ctl(3)},${bR},${C(XD.F39, r)}:${C(XD.F39 + 11, r)},${C(XD.F66, r)}:${C(XD.F66 + 11, r)},${C(XD.F93, r)}:${C(XD.F93 + 11, r)})*(${idxB}>${ctl(2)}))`, k.eac));
+        put(r, XD.RANK, fn(`IF(${C(XD.INC, r)}=1,ABS(${C(XD.YV, r)})+ROW()/1000000000,-1)`, k.rank));
+        put(r, XD.ST, fn(`IF(${C(XD.INC, r)}=0,0,IF(AND(${C(XD.YV, r)}<>0,ABS(${C(XD.YV, r)})>=${ctl(7)},IF(${C(XD.YB, r)}=0,TRUE,ABS(${C(XD.YV, r)})/${C(XD.YB, r)}>=${ctl(6)})),IF(${C(XD.YV, r)}>0,1,2),IF(${C(XD.YV, r)}>0,3,0)))`, k.st));
+      });
+
+      // ---- lists for the dropdowns
+      for (let m = 0; m < L; m++) put(m + 2, XD.MON, str(mN[m]));
+      put(2, XD.DEP, str(S.allDepts)); depts.forEach((d, i) => put(i + 3, XD.DEP, str(d)));
+
+      // ---- settings: selected period index, forecast version, department, thresholds, chart titles
+      const ctlR = (i) => `${col(XD.CTL)}${i}`;
+      const rangeTxt = S.rangeFn(mN[0]);
+      put(2, XD.CTL, fn(`IFERROR(MATCH(${D}!$K$1,${col(XD.MON)}$2:${col(XD.MON)}${L + 1},0),${L})`, p));
+      put(3, XD.CTL, fn(`IF(${ctlR(2)}>=9,4,IF(${ctlR(2)}>=6,3,IF(${ctlR(2)}>=3,2,1)))`, p >= 9 ? 4 : p >= 6 ? 3 : p >= 3 ? 2 : 1));
+      put(4, XD.CTL, fn(`${D}!$K$2`, S.allDepts));
+      put(5, XD.CTL, str(S.allDepts));
+      put(6, XD.CTL, num((model.materiality.pct || 0) / 100));
+      put(7, XD.CTL, num(model.materiality.amount || 0));
+      const t1 = `${S.chMonthly} · ${rangeTxt}${mN[L - 1]}`, t2 = `${S.chVar} · ${rangeTxt}${mN[L - 1]}`;
+      put(8, XD.CTL, fn(`"${S.chMonthly} · ${rangeTxt}"&${D}!$K$1`, t1));
+      put(9, XD.CTL, fn(`"${S.chVar} · ${rangeTxt}"&${D}!$K$1`, t2));
+
+      // ---- monthly chart table (included accounts)
+      const incR = rng(XD.INC);
+      const blockR = (c0) => `${col(c0)}$2:${col(c0 + 11)}${last}`;
+      const monthly = [];
+      for (let m = 1; m <= 12; m++) {
+        const r = m + 1;
+        let bud = 0, act = 0, fc = 0;
+        calc.forEach(k => { if (!k.inc) return; const a = k.a; bud += a.orig[m - 1]; act += a.actual[m - 1];
+          const v = p >= 9 ? a.f93 : p >= 6 ? a.f66 : p >= 3 ? a.f39 : a.orig; fc += v[m - 1]; });
+        const within = m <= p && act <= bud ? act : 'NA', over = m <= p && act > bud ? act : 'NA', fcv = m > p ? fc : 'NA';
+        monthly.push({ name: mN[m - 1], bud, within, over, fc: fcv });
+        const cd = `${col(XD.MT + 1)}${r}`, ch = `${col(XD.MT + 5)}${r}`;
+        put(r, XD.MT, str(mN[m - 1]));
+        put(r, XD.MT + 1, fn(`SUMPRODUCT(INDEX(${blockR(XD.B)},0,${m})*${incR})`, bud));
+        put(r, XD.MT + 5, fn(`SUMPRODUCT(INDEX(${blockR(XD.A)},0,${m})*${incR})`, act));
+        put(r, XD.MT + 2, fn(`IF(${m}<=${ctlR(2)},IF(${ch}<=${cd},${ch},NA()),NA())`, within));
+        put(r, XD.MT + 3, fn(`IF(${m}<=${ctlR(2)},IF(${ch}>${cd},${ch},NA()),NA())`, over));
+        put(r, XD.MT + 4, fn(`IF(${m}>${ctlR(2)},SUMPRODUCT(INDEX(CHOOSE(${ctlR(3)},${blockR(XD.B)},${blockR(XD.F39)},${blockR(XD.F66)},${blockR(XD.F93)}),0,${m})*${incR}),NA())`, fcv));
+      }
+
+      // ---- top-10 ranking (same rule as the sheet: |variance| desc, later row wins ties)
+      const ranked = calc.filter(k => k.inc).sort((x, y) => y.rank - x.rank).slice(0, 10);
+      const top = [];
+      for (let k = 1; k <= 10; k++) {
+        const it = ranked[k - 1] || null, d = 27 + k, r = k + 1;
+        top.push(it);
+        const O = `${D}!$O${d}`;
+        put(r, XD.TOPN, fn(`IF(${O}="","",INDEX(${rng(XD.NAME)},${O}))`, it ? it.a.name : ''));
+        // Zero (not #N/A) for the "other" side: zero-length bars, and the label format hides zeros
+        put(r, XD.TOPO, fn(`IF(${O}="",0,IF(INDEX(${rng(XD.YV)},${O})>0,INDEX(${rng(XD.YV)},${O}),0))`, it && it.yv > 0 ? it.yv : 0));
+        put(r, XD.TOPU, fn(`IF(${O}="",0,IF(INDEX(${rng(XD.YV)},${O})<0,INDEX(${rng(XD.YV)},${O}),0))`, it && it.yv < 0 ? it.yv : 0));
+        // Invisible spacer bars 35% longer than each variance: Excel's automatic axis then leaves room for the value labels
+        put(r, XD.TOPP, fn(`(${col(XD.TOPO)}${r}+${col(XD.TOPU)}${r})*1.35`, it ? it.yv * 1.35 : 0));
+      }
+
+      ws['!ref'] = `A1:${col(XD.TOPP)}${Math.max(last, 14)}`;
+      XLSX.utils.book_append_sheet(wb, ws, S.data);
+      if (!wb.Workbook) wb.Workbook = {};
+      wb.Workbook.Sheets = wb.SheetNames.map((nm) => ({ Hidden: nm === S.data ? 1 : 0 }));
+
+      // ---- totals for the dashboard's cached values
+      const tot = calc.reduce((s, k) => { if (k.inc) { s.yb += k.yb; s.ya += k.ya; s.fy += k.fy; s.eac += k.eac; } return s; }, { yb: 0, ya: 0, fy: 0, eac: 0 });
+      const maxAbs = Math.max(Math.abs(tot.fy), ...calc.map(k => Math.abs(k.fy)), 1);
+      const unit = xlUnitBase(maxAbs);
+
+      return {
+        S, model, n, last, L, unit, tot, top, monthly, depts,
+        dashXml: xlDashSheetXml(ctx, { n, last, L, tot, top, unit, D, DA, depts }),
+        // Each chart's axis unit follows its own range (monthly amounts and variances are smaller than annual totals)
+        chart1: xlChartMonthlyXml(S, monthly, { DA, unit: xlUnitBase(Math.max(1, ...monthly.map(mo => Math.max(Math.abs(mo.bud), Math.abs(typeof mo.within === 'number' ? mo.within : 0), Math.abs(typeof mo.over === 'number' ? mo.over : 0), Math.abs(typeof mo.fc === 'number' ? mo.fc : 0))))), title: t1 }),
+        chart2: xlChartVarianceXml(S, top, { DA, unit: xlUnitBase(Math.max(1, ...calc.map(k => Math.abs(k.yv)))), title: t2 })
+      };
+    }
+
+    // ---- The dashboard sheet XML (cells reference styles by name: §name§)
+    function xlDashSheetXml(ctx, o) {
+      const { S, model } = ctx, { n, last, L, tot, top, D, DA } = o;
+      const rows = {};
+      const add = (r, c, xml) => { (rows[r] = rows[r] || []).push({ c, xml }); };
+      const ref = (c, r) => `${xlColName(c)}${r}`;
+      const st = (name) => `§${name}§`;
+      const cStr = (c, r, s, v) => add(r, c, `<c r="${ref(c, r)}" s="${st(s)}" t="inlineStr"><is><t xml:space="preserve">${xlEsc(v)}</t></is></c>`);
+      const cBlank = (c, r, s) => add(r, c, `<c r="${ref(c, r)}" s="${st(s)}"/>`);
+      const cF = (c, r, s, f, v) => {
+        if (v === 'NA') return add(r, c, `<c r="${ref(c, r)}" s="${st(s)}" t="e"><f>${xlEsc(f)}</f><v>#N/A</v></c>`);
+        if (typeof v === 'string') return add(r, c, `<c r="${ref(c, r)}" s="${st(s)}" t="str"><f>${xlEsc(f)}</f><v>${xlEsc(v)}</v></c>`);
+        return add(r, c, `<c r="${ref(c, r)}" s="${st(s)}"><f>${xlEsc(f)}</f><v>${Number.isFinite(v) ? v : 0}</v></c>`);
+      };
+      const dr = (c) => `${DA}!${xlColName(c)}$2:${xlColName(c)}${last}`;
+      const SP = (c) => `SUMPRODUCT(${dr(c)}*${dr(XD.INC)})`;
+      const merges = [];
+      const fillRange = (c1, c2, r, s) => { for (let c = c1 + 1; c <= c2; c++) cBlank(c, r, s); merges.push(`${ref(c1, r)}:${ref(c2, r)}`); };
+
+      // Title and selectors
+      cStr(1, 1, 'title', S.title); fillRange(1, 8, 1, 'title');
+      cStr(10, 1, 'ddLabel', S.through);
+      add(1, 11, `<c r="K1" s="${st('dd')}" t="inlineStr"><is><t>${xlEsc(model.monthNames[L - 1])}</t></is></c>`); fillRange(11, 12, 1, 'dd');
+      cStr(1, 2, 'sub', S.sub); fillRange(1, 8, 2, 'sub');
+      cStr(10, 2, 'ddLabel', S.dept);
+      add(2, 11, `<c r="K2" s="${st('dd')}" t="inlineStr"><is><t>${xlEsc(S.allDepts)}</t></is></c>`); fillRange(11, 12, 2, 'dd');
+
+      // KPI tiles (rows 4-6)
+      const tiles = [
+        [1, S.kYtdB, SP(XD.YB), tot.yb, 'kVal', `${SP(XD.FY)}`, tot.fy, 'kSubFy'],
+        [4, S.kYtdA, SP(XD.YA), tot.ya, 'kVal', `IF(${SP(XD.FY)}=0,"",D5/${SP(XD.FY)})`, tot.fy ? tot.ya / tot.fy : '', 'kSubOfFy'],
+        [7, S.kVar, 'D5-A5', tot.ya - tot.yb, 'kVar', `IF(A5=0,"",G5/A5)`, tot.yb ? (tot.ya - tot.yb) / tot.yb : '', 'kSubVarPct'],
+        [10, S.kEac, SP(XD.EAC), tot.eac, 'kVal', `J5-A6`, tot.eac - tot.fy, 'kSubEacVar']
+      ];
+      tiles.forEach(([c, label, f, v, valSt, f2, v2, subSt]) => {
+        cStr(c, 4, 'kLabel', label); fillRange(c, c + 2, 4, 'kLabel');
+        cF(c, 5, valSt, f, v); fillRange(c, c + 2, 5, valSt);
+        cF(c, 6, subSt, f2, v2); fillRange(c, c + 2, 6, subSt);
+      });
+
+      // Variance table (rows 26-38)
+      cStr(1, 26, 'section', S.tblTitle); fillRange(1, 12, 26, 'section');
+      const heads = [[1, S.cAcc, 3], [4, S.cYtdB], [5, S.cYtdA], [6, S.cVar], [7, S.cVarP], [8, S.cFy], [9, S.cEac], [10, S.cEacV], [11, S.cSt, 12]];
+      heads.forEach(([c, h, c2]) => { cStr(c, 27, 'th', h); if (c2) fillRange(c, c2, 27, 'th'); });
+      const statusTxt = [S.stOk, S.stMatO, S.stMatU, S.stOver];
+      for (let k = 1; k <= 10; k++) {
+        const d = 27 + k, it = top[k - 1];
+        const O = `$O${d}`, IX = (c) => `INDEX(${dr(c)},${O})`;
+        cF(14, d, 'td', `IFERROR(LARGE(${dr(XD.RANK)},${k}),-1)`, it ? it.rank : -1);
+        cF(15, d, 'td', `IF(N${d}<0,"",MATCH(N${d},${dr(XD.RANK)},0))`, it ? it.row - 1 : '');
+        cF(16, d, 'td', `IF(${O}="",0,${IX(XD.ST)})`, it ? it.st : 0);
+        cF(1, d, 'td', `IF(${O}="","",${IX(XD.NO)}&" · "&${IX(XD.NAME)})`, it ? `${it.a.no} · ${it.a.name}` : ''); fillRange(1, 3, d, 'td');
+        cF(4, d, 'tdNum', `IF(${O}="","",${IX(XD.YB)})`, it ? it.yb : '');
+        cF(5, d, 'tdNum', `IF(${O}="","",${IX(XD.YA)})`, it ? it.ya : '');
+        cF(6, d, 'tdVar', `IF(${O}="","",${IX(XD.YV)})`, it ? it.yv : '');
+        cF(7, d, 'tdPct', `IF(${O}="","",IF(${IX(XD.YB)}=0,"",${IX(XD.YV)}/${IX(XD.YB)}))`, it ? it.yp : '');
+        cF(8, d, 'tdNum', `IF(${O}="","",${IX(XD.FY)})`, it ? it.fy : '');
+        cF(9, d, 'tdNum', `IF(${O}="","",${IX(XD.EAC)})`, it ? it.eac : '');
+        cF(10, d, 'tdVar', `IF(${O}="","",I${d}-H${d})`, it ? it.eac - it.fy : '');
+        cF(11, d, 'tdSt', `IF(${O}="","",CHOOSE(P${d}+1,"${statusTxt[0]}","${statusTxt[1]}","${statusTxt[2]}","${statusTxt[3]}"))`, it ? statusTxt[it.st] : ''); fillRange(11, 12, d, 'tdSt');
+      }
+      cStr(1, 38, 'totTxt', S.total); fillRange(1, 3, 38, 'totTxt');
+      cF(4, 38, 'totNum', 'A5', tot.yb); cF(5, 38, 'totNum', 'D5', tot.ya); cF(6, 38, 'totVar', 'G5', tot.ya - tot.yb);
+      cF(7, 38, 'totPct', 'IF(D38=0,"",F38/D38)', tot.yb ? (tot.ya - tot.yb) / tot.yb : '');
+      cF(8, 38, 'totNum', 'A6', tot.fy); cF(9, 38, 'totNum', 'J5', tot.eac); cF(10, 38, 'totVar', 'I38-H38', tot.eac - tot.fy);
+      cBlank(11, 38, 'totTxt'); cBlank(12, 38, 'totTxt'); merges.push('K38:L38');
+
+      const heights = { 1: 30, 2: 18, 3: 8, 4: 20, 5: 34, 6: 20, 7: 10, 25: 10, 26: 22, 27: 30 };
+      for (let r = 28; r <= 38; r++) heights[r] = 20;
+      const rowNums = [...new Set([...Object.keys(rows).map(Number), ...Object.keys(heights).map(Number)])].sort((a, b) => a - b);
+      const allRows = rowNums.map(r => {
+        const h = heights[r] ? ` ht="${heights[r]}" customHeight="1"` : '';
+        if (!rows[r]) return `<row r="${r}"${h}/>`;
+        return `<row r="${r}"${h}>${rows[r].sort((a, b) => a.c - b.c).map(x => x.xml).join('')}</row>`;
+      }).join('');
+
+      const cf = `<conditionalFormatting sqref="G5 G6 J6 F28:G38 J28:J38"><cfRule type="cellIs" dxfId="§dxfRed§" priority="1" operator="greaterThan"><formula>0</formula></cfRule><cfRule type="cellIs" dxfId="§dxfBlue§" priority="2" operator="lessThan"><formula>0</formula></cfRule></conditionalFormatting>` +
+        `<conditionalFormatting sqref="K28:L37"><cfRule type="expression" dxfId="§dxfRedB§" priority="3"><formula>$P28=1</formula></cfRule><cfRule type="expression" dxfId="§dxfBlue§" priority="4"><formula>$P28=2</formula></cfRule></conditionalFormatting>`;
+      const dv = `<dataValidations count="2">` +
+        `<dataValidation type="list" allowBlank="0" showErrorMessage="1" sqref="K1"><formula1>${xlEsc(`${DA}!${xlColName(XD.MON)}$2:${xlColName(XD.MON)}${L + 1}`)}</formula1></dataValidation>` +
+        `<dataValidation type="list" allowBlank="0" showErrorMessage="1" sqref="K2"><formula1>${xlEsc(`${DA}!${xlColName(XD.DEP)}$2:${xlColName(XD.DEP)}${o.depts.length + 2}`)}</formula1></dataValidation>` +
+        `</dataValidations>`;
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:P38"/><sheetViews><sheetView showGridLines="0" tabSelected="1" workbookViewId="0"${model.lang === 'ar' ? ' rightToLeft="1"' : ''}/></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols><col min="1" max="12" width="13.7" customWidth="1"/><col min="13" max="13" width="2.7" customWidth="1"/><col min="14" max="16" width="9" hidden="1" customWidth="1"/></cols><sheetData>${allRows}</sheetData><mergeCells count="${merges.length}">${merges.map(m => `<mergeCell ref="${m}"/>`).join('')}</mergeCells>${cf}${dv}<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="1"/><drawing r:id="rIdDash1"/></worksheet>`;
+    }
+
+    // ---- Native chart XML helpers
+    const XC_NS = 'xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+    function xcStrRef(f, vals) {
+      return `<c:strRef><c:f>${xlEsc(f)}</c:f><c:strCache><c:ptCount val="${vals.length}"/>${vals.map((v, i) => `<c:pt idx="${i}"><c:v>${xlEsc(v)}</c:v></c:pt>`).join('')}</c:strCache></c:strRef>`;
+    }
+    function xcNumRef(f, vals) {
+      return `<c:numRef><c:f>${xlEsc(f)}</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${vals.length}"/>${vals.map((v, i) => (typeof v === 'number' && Number.isFinite(v)) ? `<c:pt idx="${i}"><c:v>${v}</c:v></c:pt>` : '').join('')}</c:numCache></c:numRef>`;
+    }
+    const xcFill = (hex) => `<a:solidFill><a:srgbClr val="${hex}"/></a:solidFill>`;
+    const xcTxPr = (sz, hex, b) => `<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="${sz}"${b ? ' b="1"' : ''}>${xcFill(hex)}<a:latin typeface="Calibri"/><a:cs typeface="Calibri"/></a:defRPr></a:pPr><a:endParaRPr lang="en-US"/></a:p></c:txPr>`;
+    function xcTitle(f, text) {
+      return `<c:title><c:tx>${xcStrRef(f, [text])}</c:tx><c:overlay val="0"/>${xcTxPr(1200, '0F172A', true)}</c:title><c:autoTitleDeleted val="0"/>`;
+    }
+    function xcWrap(inner, legendPos, hiddenIdx) {
+      const hide = (hiddenIdx || []).map(i => `<c:legendEntry><c:idx val="${i}"/><c:delete val="1"/></c:legendEntry>`).join('');
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace ${XC_NS}><c:roundedCorners val="0"/><c:chart>${inner}<c:legend><c:legendPos val="${legendPos}"/>${hide}<c:overlay val="0"/>${xcTxPr(900, '52514E')}</c:legend><c:plotVisOnly val="0"/><c:dispBlanksAs val="gap"/></c:chart><c:spPr>${xcFill('FFFFFF')}<a:ln w="9525">${xcFill('E2E8F0')}</a:ln></c:spPr>${xcTxPr(900, '52514E')}</c:chartSpace>`;
+    }
+    const xcValAx = (id, cross, pos, fmt, crosses) => `<c:valAx><c:axId val="${id}"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="${pos}"/><c:majorGridlines><c:spPr><a:ln w="6350">${xcFill('E1E0D9')}</a:ln></c:spPr></c:majorGridlines><c:numFmt formatCode="${xlEsc(fmt)}" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:spPr><a:ln><a:noFill/></a:ln></c:spPr>${xcTxPr(900, '6B6A66')}<c:crossAx val="${cross}"/><c:crosses val="${crosses || 'autoZero'}"/><c:crossBetween val="between"/></c:valAx>`;
+    const xcCatAx = (id, cross, pos, reverse, lblPos) => `<c:catAx><c:axId val="${id}"/><c:scaling><c:orientation val="${reverse ? 'maxMin' : 'minMax'}"/></c:scaling><c:delete val="0"/><c:axPos val="${pos}"/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="${lblPos || 'nextTo'}"/><c:spPr><a:ln w="9525">${xcFill('C3C2B7')}</a:ln></c:spPr>${xcTxPr(900, '52514E')}<c:crossAx val="${cross}"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>`;
+
+    // Monthly spend vs budget: actual columns (within / over budget), forecast columns, budget line
+    function xlChartMonthlyXml(S, monthly, o) {
+      const { DA, unit, title } = o;
+      const col = (c) => `${DA}!${xlColName(c)}$2:${xlColName(c)}$13`;
+      const cats = xcStrRef(col(XD.MT), monthly.map(m => m.name));
+      const bar = (idx, name, c, vals, hex, lineHex) => `<c:ser><c:idx val="${idx}"/><c:order val="${idx}"/><c:tx><c:v>${xlEsc(name)}</c:v></c:tx><c:spPr>${xcFill(hex)}${lineHex ? `<a:ln w="9525">${xcFill(lineHex)}</a:ln>` : ''}</c:spPr><c:invertIfNegative val="0"/><c:cat>${cats}</c:cat><c:val>${xcNumRef(col(c), vals)}</c:val></c:ser>`;
+      const line = `<c:ser><c:idx val="3"/><c:order val="3"/><c:tx><c:v>${xlEsc(S.sBudget)}</c:v></c:tx><c:spPr><a:ln w="22225" cap="rnd">${xcFill('52514E')}<a:prstDash val="dash"/><a:round/></a:ln></c:spPr><c:marker><c:symbol val="circle"/><c:size val="6"/><c:spPr>${xcFill('52514E')}<a:ln w="12700">${xcFill('FFFFFF')}</a:ln></c:spPr></c:marker><c:cat>${cats}</c:cat><c:val>${xcNumRef(col(XD.MT + 1), monthly.map(m => m.bud))}</c:val><c:smooth val="0"/></c:ser>`;
+      const inner = `${xcTitle(`${DA}!${xlColName(XD.CTL)}$8`, title)}<c:plotArea><c:layout/>` +
+        `<c:barChart><c:barDir val="col"/><c:grouping val="clustered"/><c:varyColors val="0"/>` +
+        bar(0, S.sWithin, XD.MT + 2, monthly.map(m => m.within), '2A78D6') +
+        bar(1, S.sOver, XD.MT + 3, monthly.map(m => m.over), 'E34948') +
+        bar(2, S.sFc, XD.MT + 4, monthly.map(m => m.fc), '9EC5F4', '2A78D6') +
+        `<c:gapWidth val="70"/><c:overlap val="100"/><c:axId val="5001"/><c:axId val="5002"/></c:barChart>` +
+        `<c:lineChart><c:grouping val="standard"/><c:varyColors val="0"/>${line}<c:marker val="1"/><c:axId val="5001"/><c:axId val="5002"/></c:lineChart>` +
+        xcCatAx(5001, 5002, 'b', false) + xcValAx(5002, 5001, 'l', unit) + `</c:plotArea>`;
+      return xcWrap(inner, 't');
+    }
+
+    // YTD variance by account: horizontal bars, over budget red, under budget blue, largest first
+    function xlChartVarianceXml(S, top, o) {
+      const { DA, unit, title } = o;
+      const col = (c) => `${DA}!${xlColName(c)}$2:${xlColName(c)}$11`;
+      const cats = xcStrRef(col(XD.TOPN), top.map(t => t ? t.a.name : ''));
+      const dl = `<c:dLbls><c:numFmt formatCode="${xlEsc(`+${unit};-${unit};;`)}" sourceLinked="0"/><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr>${xcTxPr(900, '0F172A')}<c:dLblPos val="outEnd"/><c:showLegendKey val="0"/><c:showVal val="1"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="0"/><c:showBubbleSize val="0"/></c:dLbls>`;
+      const ser = (idx, name, c, vals, hex) => `<c:ser><c:idx val="${idx}"/><c:order val="${idx}"/><c:tx><c:v>${xlEsc(name)}</c:v></c:tx><c:spPr>${xcFill(hex)}</c:spPr><c:invertIfNegative val="0"/>${dl}<c:cat>${cats}</c:cat><c:val>${xcNumRef(col(c), vals)}</c:val></c:ser>`;
+      const inner = `${xcTitle(`${DA}!${xlColName(XD.CTL)}$9`, title)}<c:plotArea><c:layout/>` +
+        `<c:barChart><c:barDir val="bar"/><c:grouping val="clustered"/><c:varyColors val="0"/>` +
+        ser(0, S.sOverB, XD.TOPO, top.map(t => t && t.yv > 0 ? t.yv : 0), 'E34948') +
+        ser(1, S.sUnderB, XD.TOPU, top.map(t => t && t.yv < 0 ? t.yv : 0), '2A78D6') +
+        `<c:ser><c:idx val="2"/><c:order val="2"/><c:tx><c:v></c:v></c:tx><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr><c:invertIfNegative val="0"/><c:cat>${cats}</c:cat><c:val>${xcNumRef(col(XD.TOPP), top.map(t => (t ? t.yv * 1.35 : 0)))}</c:val></c:ser>` +
+        `<c:gapWidth val="50"/><c:overlap val="100"/><c:axId val="6001"/><c:axId val="6002"/></c:barChart>` +
+        xcCatAx(6001, 6002, 'l', true, 'low') + xcValAx(6002, 6001, 'b', unit, 'max') + `</c:plotArea>`;
+      return xcWrap(inner, 't', [2]);
+    }
+
+    // ---- Styles used by the dashboard sheet (merged into the workbook's styles.xml)
+    function xlDashStyleSpecs(S, unit, rtl) {
+      const signed = `+${unit};-${unit};${unit}`;
+      const q = (s) => `"${s.replace(/"/g, '')}"`;
+      const F = {
+        U: unit, US: signed, PS: '+0.0%;-0.0%;0.0%',
+        FY: `${q(S.fyPrefix)}${unit}`, OFFY: `0%${q(S.ofFy)}`,
+        VARPCT: `+0.0%${q(S.vsYtd)};-0.0%${q(S.vsYtd)};0.0%${q(S.vsYtd)}`,
+        EACVAR: `+${unit}${q(S.vsBud)};-${unit}${q(S.vsBud)};${unit}${q(S.vsBud)}`
+      };
+      const tile = { fill: 'F1F5F9', border: 'tile' };
+      return {
+        F,
+        st: {
+          title: { font: { sz: 18, b: 1, color: '0F172A' }, align: { v: 'center' } },
+          sub: { font: { sz: 10, color: '475569' }, align: { v: 'center' } },
+          ddLabel: { font: { sz: 10, b: 1, color: '334155' }, align: { h: 'center', v: 'center' } },
+          dd: { font: { sz: 11, b: 1, color: '1E3A8A' }, fill: 'DBEAFE', border: 'dd', align: { h: 'center', v: 'center' } },
+          kLabel: { font: { sz: 10, color: '475569' }, ...tile, align: { h: 'center', v: 'bottom' } },
+          kVal: { font: { sz: 20, b: 1, color: '0F172A' }, ...tile, fmt: 'U', align: { h: 'center', v: 'center' } },
+          kVar: { font: { sz: 20, b: 1, color: '0F172A' }, ...tile, fmt: 'US', align: { h: 'center', v: 'center' } },
+          kSubFy: { font: { sz: 9, color: '475569' }, ...tile, fmt: 'FY', align: { h: 'center', v: 'top' } },
+          kSubOfFy: { font: { sz: 9, color: '475569' }, ...tile, fmt: 'OFFY', align: { h: 'center', v: 'top' } },
+          kSubVarPct: { font: { sz: 9, color: '475569' }, ...tile, fmt: 'VARPCT', align: { h: 'center', v: 'top' } },
+          kSubEacVar: { font: { sz: 9, color: '475569' }, ...tile, fmt: 'EACVAR', align: { h: 'center', v: 'top' } },
+          section: { font: { sz: 12, b: 1, color: '0F172A' }, align: { v: 'center' } },
+          th: { font: { sz: 10, b: 1, color: '0F172A' }, fill: 'E2E8F0', border: 'th', align: { h: 'center', v: 'center', wrap: 1 } },
+          td: { font: { sz: 10, color: '0F172A' }, border: 'td', align: { h: rtl ? 'right' : 'left', v: 'center', indent: 1 } },
+          tdNum: { font: { sz: 10, color: '0F172A' }, border: 'td', fmt: 'U', align: { v: 'center' } },
+          tdVar: { font: { sz: 10, color: '0F172A' }, border: 'td', fmt: 'US', align: { v: 'center' } },
+          tdPct: { font: { sz: 10, color: '0F172A' }, border: 'td', fmt: 'PS', align: { v: 'center' } },
+          tdSt: { font: { sz: 10, color: '334155' }, border: 'td', align: { h: 'center', v: 'center' } },
+          totTxt: { font: { sz: 10, b: 1, color: '0F172A' }, border: 'tot', align: { v: 'center' } },
+          totNum: { font: { sz: 10, b: 1, color: '0F172A' }, border: 'tot', fmt: 'U', align: { v: 'center' } },
+          totVar: { font: { sz: 10, b: 1, color: '0F172A' }, border: 'tot', fmt: 'US', align: { v: 'center' } },
+          totPct: { font: { sz: 10, b: 1, color: '0F172A' }, border: 'tot', fmt: 'PS', align: { v: 'center' } }
+        },
+        dxf: {
+          dxfRed: '<dxf><font><color rgb="FFB91C1C"/></font></dxf>',
+          dxfRedB: '<dxf><font><b/><color rgb="FFB91C1C"/></font></dxf>',
+          dxfBlue: '<dxf><font><color rgb="FF1D4ED8"/></font></dxf>'
+        }
+      };
+    }
+
+    function xlMergeStyles(stylesXml, spec) {
+      let x = stylesXml;
+      const grab = (tag) => {
+        const re = new RegExp(`<${tag} count="(\\d+)"([^>]*)>([\\s\\S]*?)</${tag}>|<${tag} count="(\\d+)"([^>]*)/>`);
+        const m = x.match(re);
+        return m ? { full: m[0], count: Number(m[1] || m[4]), attrs: m[2] || m[5] || '', body: m[3] || '' } : null;
+      };
+      const put = (tag, items, insertAfterTag) => {
+        const g = grab(tag);
+        if (g) { x = x.replace(g.full, `<${tag} count="${g.count + items.length}"${g.attrs}>${g.body}${items.join('')}</${tag}>`); return g.count; }
+        x = x.replace(insertAfterTag, (m0) => `${m0}<${tag} count="${items.length}">${items.join('')}</${tag}>`);
+        return 0;
+      };
+      const fonts = [], fills = [], borders = [], numFmts = [], xfs = [], fontKey = {}, fillKey = {}, borderKey = {}, fmtKey = {};
+      const bXml = {
+        none: '<border><left/><right/><top/><bottom/><diagonal/></border>',
+        tile: '<border><left style="thick"><color rgb="FFFFFFFF"/></left><right style="thick"><color rgb="FFFFFFFF"/></right><top/><bottom/><diagonal/></border>',
+        dd: '<border><left style="medium"><color rgb="FF1D4ED8"/></left><right style="medium"><color rgb="FF1D4ED8"/></right><top style="medium"><color rgb="FF1D4ED8"/></top><bottom style="medium"><color rgb="FF1D4ED8"/></bottom><diagonal/></border>',
+        th: '<border><left/><right/><top/><bottom style="medium"><color rgb="FF94A3B8"/></bottom><diagonal/></border>',
+        td: '<border><left/><right/><top/><bottom style="thin"><color rgb="FFE2E8F0"/></bottom><diagonal/></border>',
+        tot: '<border><left/><right/><top style="medium"><color rgb="FF334155"/></top><bottom/><diagonal/></border>'
+      };
+      const g0 = { fonts: grab('fonts'), fills: grab('fills'), borders: grab('borders'), cellXfs: grab('cellXfs'), numFmts: grab('numFmts') };
+      const base = { font: g0.fonts ? g0.fonts.count : 0, fill: g0.fills ? g0.fills.count : 0, border: g0.borders ? g0.borders.count : 0, xf: g0.cellXfs ? g0.cellXfs.count : 0 };
+      let nextFmt = 200;
+      const xfIndex = {};
+      Object.keys(spec.st).forEach((name) => {
+        const s = spec.st[name];
+        const fk = JSON.stringify(s.font);
+        if (fontKey[fk] === undefined) { fontKey[fk] = base.font + fonts.length; fonts.push(`<font>${s.font.b ? '<b/>' : ''}<sz val="${s.font.sz}"/><color rgb="FF${s.font.color}"/><name val="Calibri"/><family val="2"/></font>`); }
+        let fillId = 0;
+        if (s.fill) { if (fillKey[s.fill] === undefined) { fillKey[s.fill] = base.fill + fills.length; fills.push(`<fill><patternFill patternType="solid"><fgColor rgb="FF${s.fill}"/><bgColor indexed="64"/></patternFill></fill>`); } fillId = fillKey[s.fill]; }
+        let borderId = 0;
+        if (s.border) { if (borderKey[s.border] === undefined) { borderKey[s.border] = base.border + borders.length; borders.push(bXml[s.border]); } borderId = borderKey[s.border]; }
+        let fmtId = 0;
+        if (s.fmt) { const code = spec.F[s.fmt]; if (fmtKey[code] === undefined) { fmtKey[code] = nextFmt++; numFmts.push(`<numFmt numFmtId="${fmtKey[code]}" formatCode="${xlEsc(code)}"/>`); } fmtId = fmtKey[code]; }
+        const al = s.align || {};
+        const alXml = `<alignment${al.h ? ` horizontal="${al.h}"` : ''}${al.v ? ` vertical="${al.v}"` : ''}${al.wrap ? ' wrapText="1"' : ''}${al.indent ? ` indent="${al.indent}"` : ''}/>`;
+        xfIndex[name] = base.xf + xfs.length;
+        xfs.push(`<xf numFmtId="${fmtId}" fontId="${fontKey[fk]}" fillId="${fillId}" borderId="${borderId}" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">${alXml}</xf>`);
+      });
+      const headTag = (x.match(/<styleSheet[^>]*>/) || [''])[0];
+      if (numFmts.length) put('numFmts', numFmts, headTag);
+      put('fonts', fonts, '</numFmts>');
+      if (fills.length) put('fills', fills, '</fonts>');
+      put('borders', borders, '</fills>');
+      put('cellXfs', xfs, '</cellStyleXfs>');
+      const dxfNames = Object.keys(spec.dxf), dxfIndex = {};
+      const gd = grab('dxfs');
+      const dBase = gd ? gd.count : 0;
+      dxfNames.forEach((nm, i) => { dxfIndex[nm] = dBase + i; });
+      if (gd) x = x.replace(gd.full, `<dxfs count="${dBase + dxfNames.length}">${gd.body}${dxfNames.map(k => spec.dxf[k]).join('')}</dxfs>`);
+      else x = x.replace('</cellStyles>', `</cellStyles><dxfs count="${dxfNames.length}">${dxfNames.map(k => spec.dxf[k]).join('')}</dxfs>`);
+      return { xml: x, xfIndex, dxfIndex };
+    }
+
+    // ---- Package step: inject styles, dashboard sheet, drawing and charts into the .xlsx bytes
+    function xlDashPostProcess(bytes, info) {
+      const CFB = XLSX.CFB;
+      const zip = CFB.read(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes), { type: 'array' });
+      const dec = new TextDecoder('utf-8'), enc = new TextEncoder();
+      // Paths inside the package must start with "/" for the embedded zip reader
+      const rd = (p) => { const e = CFB.find(zip, '/' + p); if (!e) return null; const c = e.content; return dec.decode(c instanceof Uint8Array ? c : new Uint8Array(c)); };
+      const wr = (p, s) => CFB.utils.cfb_add(zip, '/' + p, enc.encode(s));
+
+      // Which part is the dashboard sheet?
+      const wbXml = rd('xl/workbook.xml'), relsXml = rd('xl/_rels/workbook.xml.rels');
+      const sheetTag = [...wbXml.matchAll(/<sheet [^>]*\/>/g)].map(m => m[0]).find(t => t.includes(`name="${xlEsc(info.S.dash)}"`));
+      const rid = sheetTag.match(/r:id="([^"]+)"/)[1];
+      const target = relsXml.match(new RegExp(`<Relationship [^>]*Id="${rid}"[^>]*Target="([^"]+)"`))[1].replace(/^\/?xl\//, '');
+      const sheetPath = `xl/${target}`, sheetFile = target.split('/').pop();
+
+      // Styles
+      const spec = xlDashStyleSpecs(info.S, info.unit, info.model.lang === 'ar');
+      const merged = xlMergeStyles(rd('xl/styles.xml'), spec);
+      wr('xl/styles.xml', merged.xml);
+      let dashXml = info.dashXml.replace(/§(\w+)§/g, (m0, k) => (merged.xfIndex[k] !== undefined ? merged.xfIndex[k] : merged.dxfIndex[k]));
+      wr(sheetPath, dashXml);
+
+      // Drawing with the two charts, side by side under the KPI tiles (rows 8-24)
+      const anchor = (c1, c2, id, rIdC) => `<xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>${c1}</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>7</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>${c2}</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>24</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="${id}" name="Chart ${id}"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="${rIdC}"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>`;
+      wr('xl/drawings/drawingDash1.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${anchor(0, 6, 2, 'rIdC1')}${anchor(6, 12, 3, 'rIdC2')}</xdr:wsDr>`);
+      wr('xl/drawings/_rels/drawingDash1.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdC1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chartDash1.xml"/><Relationship Id="rIdC2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chartDash2.xml"/></Relationships>`);
+      wr('xl/charts/chartDash1.xml', info.chart1);
+      wr('xl/charts/chartDash2.xml', info.chart2);
+
+      // Sheet -> drawing relationship
+      const sheetRelsPath = `xl/worksheets/_rels/${sheetFile}.rels`;
+      const drawingRel = `<Relationship Id="rIdDash1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawingDash1.xml"/>`;
+      const existingRels = rd(sheetRelsPath);
+      wr(sheetRelsPath, existingRels
+        ? existingRels.replace('</Relationships>', `${drawingRel}</Relationships>`)
+        : `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${drawingRel}</Relationships>`);
+
+      // Content types
+      let ct = rd('[Content_Types].xml');
+      ct = ct.replace('</Types>', `<Override PartName="/xl/drawings/drawingDash1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/><Override PartName="/xl/charts/chartDash1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/><Override PartName="/xl/charts/chartDash2.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/></Types>`);
+      wr('[Content_Types].xml', ct);
+
+      // Recalculate everything when the file is opened
+      let wbx = wbXml;
+      if (!/<calcPr/.test(wbx)) wbx = wbx.replace('</workbook>', '<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>');
+      wr('xl/workbook.xml', wbx);
+
+      return CFB.write(zip, { type: 'array', fileType: 'zip', compression: true });
+    }
+
+    // Save bytes as an .xlsx download
+    function xlSaveBytes(bytes, filename) {
+      const blob = new Blob([bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
       initFloatingTooltips();
+      initOverviewInteractions();
       applyLanguageUI();
       loadSampleData();
       // Deep link to a tab, e.g. FPA_Budget_And_GL_Analyzer.html#tab-dashboard

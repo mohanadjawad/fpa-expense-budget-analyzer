@@ -2,7 +2,7 @@
 
 **FP&A tool for expense accounts: budget vs. actual expenses, rolling forecasts (3+9 / 6+6 / 9+3), invoice-level over-budget tracking and next-year budget proposals — in a single HTML file that runs entirely in your browser, with no internet, no installation and no server.**
 
-![100% Offline](https://img.shields.io/badge/100%25-Offline-2ea44f) ![No install](https://img.shields.io/badge/install-none-blue) ![Single file](https://img.shields.io/badge/single%20HTML%20file-~1.2%20MB-informational) ![Languages](https://img.shields.io/badge/UI-English%20%7C%20العربية-orange) ![Scope](https://img.shields.io/badge/scope-expenses%20only-yellow)
+![100% Offline](https://img.shields.io/badge/100%25-Offline-2ea44f) ![No install](https://img.shields.io/badge/install-none-blue) ![Single file](https://img.shields.io/badge/single%20HTML%20file-~1.35%20MB-informational) ![Languages](https://img.shields.io/badge/UI-English%20%7C%20العربية-orange) ![Scope](https://img.shields.io/badge/scope-expenses%20only-yellow)
 
 ### ⬇️ [Download the tool (single file)](https://github.com/mohanadjawad/fpa-expense-budget-analyzer/releases/latest/download/FPA_Budget_And_GL_Analyzer.html) · ▶️ [Live demo](https://mohanadjawad.github.io/fpa-expense-budget-analyzer/)
 
@@ -12,7 +12,7 @@ The live demo runs entirely in your browser, exactly like the downloaded file: a
 
 [العربية ↓](#بالعربية)
 
-![Account summary with YTD and EAC](docs/screenshots/tab-dashboard.png)
+![Budget performance dashboard](docs/screenshots/tab-overview.png)
 
 ---
 
@@ -35,13 +35,14 @@ The interface starts in **English**; switch to **Arabic** (full right-to-left la
 | Tab | Purpose |
 |---|---|
 | **Data Import & Setup** | Import an expense budget (monthly columns or one annual total) and actual expenses (a full General Ledger with dates and invoice numbers, or a monthly summary). Automatic column matching for English and Arabic headers. |
+| **Dashboard** | Budget performance on one page: YTD budget, YTD actual, YTD variance, full-year forecast (EAC) and budget available after commitments; monthly spend vs budget; YTD variance by account; a budget-to-forecast bridge; budget use by department; and the material variances table. Filter by period and department, and show amounts in units, thousands, millions or billions. Each chart can be copied as an image or saved as PNG. |
 | **Account Summary & Variance %** | Per account: original budget, actual spend, open commitments (POs), net available budget, **year-to-date (YTD) variance**, **estimate at completion (EAC)**, materiality flags, variance classification and explanatory notes. |
 | **Rolling Forecasts** | Original budget and 3+9 / 6+6 / 9+3 forecasts, with closed months locked to actuals, auto-fill helpers (run-rate, prior 3-month trend) and **approve & freeze** of a forecast version. |
 | **Monthly Budget Breach Analysis** | Month cards and a chronological invoice list showing the **first invoice that broke each monthly budget** and every invoice after it. |
 | **Annual & Monthly Over-Budget Expenses** | One row per over-budget invoice with both the monthly and the full-year cumulative excess **up to the invoice date**, plus analytical review indicators. |
 | **Next Year Budget Proposal** | Proposal per account from four methods (smart planning, 9+3 forecast, annualized run-rate, original budget) plus a growth factor, with automatic exclusion of one-off expenses and clearly labelled manual overrides. |
 
-![Over-budget invoices](docs/screenshots/tab-annual-invoices.png)
+![Account summary with YTD and EAC](docs/screenshots/tab-dashboard.png)
 
 ## Key calculations
 
@@ -65,7 +66,17 @@ The **last closed month** is detected automatically from the data and can be pin
 
 ## Excel export
 
-A 6-sheet workbook: account summary, rolling forecasts, next-year proposal, monthly breaches, annual & monthly over-budget invoices, and change log. Sheet names, headers and all generated text follow the selected language (Arabic workbooks open right-to-left). Projects can be saved and reopened as `.json` files.
+The full report opens on an **interactive dashboard sheet**: pick the month and the department from two dropdown cells and the key figures, the top-10 variance table and two native Excel charts (monthly spend vs budget, YTD variance by account) recalculate with live formulas. Material variances are highlighted with conditional formatting, and amounts are shown in K, M or B to match the size of the budget.
+
+After the dashboard come six detail sheets: account summary, rolling forecasts, next-year proposal, monthly breaches, annual & monthly over-budget invoices, and change log (plus a hidden `Data` sheet that feeds the dashboard). Sheet names, headers and all generated text follow the selected language (Arabic workbooks open right-to-left). Projects can be saved and reopened as `.json` files.
+
+![Excel dashboard sheet](docs/screenshots/excel-dashboard.png)
+
+## Large files
+
+Tested with a General Ledger of **100,000 lines** and amounts in the billions: a full refresh takes about 2 seconds and the full Excel report about 10 seconds on a standard laptop. Long invoice tables show 500 rows at a time with a **Show more** button; totals always cover every row.
+
+![Over-budget invoices](docs/screenshots/tab-annual-invoices.png)
 
 ![Rolling forecasts](docs/screenshots/tab-reforecast.png)
 
@@ -108,7 +119,8 @@ HTML5, CSS3 and vanilla JavaScript — no framework, no build step, no backend. 
 - **بياناتك المالية لا تغادر جهازك:** لا يتم رفع أو إرسال أي ملف أو رقم.
 - **طريقة التشغيل:** [حمّل ملف الأداة](https://github.com/mohanadjawad/fpa-expense-budget-analyzer/releases/latest/download/FPA_Budget_And_GL_Analyzer.html) وافتحه بنقرة مزدوجة. الواجهة تبدأ بالإنجليزية ويمكن التحويل إلى العربية من زر اللغة.
 - **تجربة مباشرة من المتصفح:** [افتح الأداة أونلاين](https://mohanadjawad.github.io/fpa-expense-budget-analyzer/) — تعمل بنفس الطريقة داخل متصفحك، وأي ملف ترفعه يُعالج على جهازك ولا يُرسل لأي خادم.
-- **أهم الخصائص:** مقارنة YTD، التوقع الكامل للسنة (EAC)، حد الأهمية النسبية بالاتجاهين، اعتماد وتجميد نسخ التوقعات، مؤشرات الفحص التحليلي (القيود المكررة، تجزئة الفواتير، تركز نهاية الشهر، القيود بدون مرجع)، سجل كامل للتعديلات، وتقرير Excel من 6 أوراق بلغة الواجهة.
+- **أهم الخصائص:** لوحة مؤشرات لأداء الميزانية مع رسوم بيانية وفلاتر للفترة والقسم، مقارنة YTD، التوقع الكامل للسنة (EAC)، حد الأهمية النسبية بالاتجاهين، اعتماد وتجميد نسخ التوقعات، مؤشرات الفحص التحليلي (القيود المكررة، تجزئة الفواتير، تركز نهاية الشهر، القيود بدون مرجع)، سجل كامل للتعديلات، وتقرير Excel بلغة الواجهة يبدأ بلوحة مؤشرات تفاعلية (قائمتان للشهر والقسم، معادلات ورسوم Excel أصلية) تليها 6 أوراق تفصيلية.
+- **الملفات الكبيرة:** تمت تجربتها على سجل أستاذ عام من 100,000 سطر ومبالغ بالمليارات: التحديث الكامل حوالي ثانيتين وتصدير التقرير حوالي 10 ثوانٍ.
 - **النطاق:** حسابات المصروفات فقط؛ لا تُستخدم لحسابات الإيرادات.
 
 الوثيقة الكاملة بالعربية: [`docs/FPA_System_Documentation_And_Cloud_Guide.md`](docs/FPA_System_Documentation_And_Cloud_Guide.md)
