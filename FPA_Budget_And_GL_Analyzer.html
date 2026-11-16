@@ -86,9 +86,6 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       flex-wrap: wrap;
       gap: 14px;
       box-shadow: var(--shadow-md);
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }
 
     .brand-title { display: flex; align-items: center; gap: 12px; }
@@ -148,6 +145,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
     /* Navigation Tabs */
     .nav-bar {
+      position: sticky; top: 0; z-index: 99;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
@@ -346,6 +344,59 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       font-size: 12.5px; font-weight: 600; display: none; align-items: center; gap: 10px;
     }
 
+    /* ---------- Column-mapping month grids: as many columns as fit, never wider than the card ---------- */
+    .map-months-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .map-months-grid .form-group { min-width: 0; }
+
+    /* ---------- Getting started: 3-step guide on the import tab ---------- */
+    .import-steps .steps-head { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .import-steps .steps-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .import-steps .steps-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; max-width: 760px; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .step-card {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; background: var(--surface-alt);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .step-card.is-next { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.10); }
+    .step-card.is-done { border-color: var(--success-border); background: #f0fdf4; }
+    .step-card .step-top { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; color: var(--text); }
+    .step-card .step-state { font-size: 12px; color: var(--text-muted); min-height: 18px; }
+    .step-card.is-done .step-state { color: var(--success); font-weight: 700; }
+    .step-card .btn { align-self: flex-start; margin-top: auto; }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 800;
+    }
+    .step-card.is-done .step-num { background: var(--success); }
+    .steps-templates { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+
+    /* ---------- Sample-data notice (all tabs except the import tab) ---------- */
+    .sample-bar {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+      background: #fffbeb; border: 1px solid var(--warning-border); border-inline-start: 4px solid #d97706;
+      color: #78350f; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 12.5px;
+    }
+    .sample-bar strong { color: #451a03; }
+
+    /* ---------- Wide tables: the first columns stay in view while scrolling sideways ---------- */
+    /* Separate borders: collapsed borders stay behind when cells are sticky and let scrolled content show through */
+    table.frozen { border-collapse: separate; border-spacing: 0; }
+    table.frozen tbody tr { background-color: var(--surface); }
+    table.frozen tbody tr:hover { background-color: #f8fafc; }
+    table.frozen .fz { position: sticky; z-index: 4; }
+    table.frozen tbody td.fz { background-color: inherit; }
+    table.frozen thead th.fz { z-index: 12; }
+    table.frozen tfoot .fz { z-index: 11; }
+    table.frozen .fz-last { box-shadow: inset -1px 0 0 var(--border-strong), 6px 0 6px -6px rgba(15, 23, 42, 0.25); }
+    [dir="rtl"] table.frozen .fz-last { box-shadow: inset 1px 0 0 var(--border-strong), -6px 0 6px -6px rgba(15, 23, 42, 0.25); }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 4px; }
+
+    /* ---------- Month cards: months after the last closed month ---------- */
+    .month-card.is-open { background: var(--surface-alt); border-style: dashed; }
+    .month-card.is-open .month-card-title > span:first-child { color: var(--text-muted); }
+
+    @media (max-width: 900px) { .steps-grid { grid-template-columns: minmax(0, 1fr); } }
+
     /* ---------- Management dashboard tab ---------- */
     .ov-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
     .ov-title { font-size: 18px; font-weight: 800; color: var(--text); }
@@ -405,8 +456,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       .brand-icon { width: 34px; height: 34px; font-size: 17px; }
       .brand-title h1 { font-size: 14.5px; line-height: 1.35; }
       .brand-title p { font-size: 11px; }
-      .header-actions { width: 100%; gap: 6px; }
-      .header-actions .btn, .header-actions .lang-switch-btn { flex: 1 1 calc(50% - 6px); justify-content: center; padding: 8px 8px; font-size: 11.5px; white-space: normal; text-align: center; }
+      /* One swipeable row of actions instead of three rows of buttons */
+      .header-actions { width: 100%; gap: 6px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+      .header-actions::-webkit-scrollbar { display: none; }
+      .header-actions .btn, .header-actions .lang-switch-btn { flex: 0 0 auto; justify-content: center; padding: 8px 10px; font-size: 11.5px; white-space: nowrap; min-height: 36px; }
 
       /* Tabs: one swipeable row that stays on screen while scrolling */
       .nav-bar {
@@ -440,6 +493,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       .segmented-control { display: flex; width: 100%; }
       .seg-btn { flex: 1 1 auto; }
 
+      .btn, .seg-btn { min-height: 36px; }
+      .help-tip { width: 22px; height: 22px; font-size: 12px; }
+      .ov-act { width: 34px; height: 34px; }
+      #ov-c-kpi .ov-svg { padding-top: 14px; } /* keep the tiles clear of the copy/download buttons */
       .toast-notification { inset-inline: 10px; bottom: 10px; }
       #floating-tooltip { max-width: calc(100vw - 24px); }
     }
@@ -473,7 +530,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         🌐 English / العربية
       </button>
       <button class="btn btn-outline-light" onclick="loadSampleData(true)" data-tip="tip_sample">
-        📋 <span data-i18n="btn_sample_model">نموذج بيانات معياري للمعاينة</span>
+        📋 <span data-i18n="btn_sample_model">تحميل البيانات التجريبية</span>
       </button>
       <button class="btn btn-success" onclick="exportFullWorkbook()" data-tip="tip_export_all">
         📥 <span data-i18n="btn_export_excel">تصدير التقرير المالي الشامل (Excel)</span>
@@ -490,10 +547,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
   <!-- Navigation Bar -->
   <nav class="nav-bar">
-    <button class="nav-tab active" data-tab="tab-upload" onclick="switchTab('tab-upload')" data-tip="tip_nav_upload">
+    <button class="nav-tab" data-tab="tab-upload" onclick="switchTab('tab-upload')" data-tip="tip_nav_upload">
       <span data-i18n="nav_upload">إدخال واستيراد البيانات</span>
     </button>
-    <button class="nav-tab" data-tab="tab-overview" onclick="switchTab('tab-overview')" data-tip="tip_nav_overview">
+    <button class="nav-tab active" data-tab="tab-overview" onclick="switchTab('tab-overview')" data-tip="tip_nav_overview">
       <span data-i18n="nav_overview">لوحة المؤشرات</span>
     </button>
     <button class="nav-tab" data-tab="tab-dashboard" onclick="switchTab('tab-dashboard')" data-tip="tip_nav_summary">
@@ -516,30 +573,22 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
   <!-- Main Content -->
   <main class="main-container">
+    <div id="sample-data-bar" class="sample-bar" style="display:none;"></div>
 
     <!-- ==========================================
          TAB 1: DATA IMPORT & SETUP
     =========================================== -->
-    <section id="tab-upload" class="tab-section active">
-      <div class="info-banner">
-        <div data-i18n="banner_upload_info">
-          <strong>استيراد سلس وآمن للبيانات المالية:</strong>
-          بمجرد رفع ملف الميزانية أو ملف الأستاذ العام (GL)، يقوم النظام تلقائياً باستبدال البيانات المعيارية الافتراضية واعتماد بياناتك الفعلية فوراً.
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('budget')" data-tip="tip_tpl_budget">📄 <span data-i18n="tpl_budget">نموذج ملف الميزانية</span></button>
-          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('gl')" data-tip="tip_tpl_gl">📄 <span data-i18n="tpl_gl">نموذج سجل الأستاذ العام (GL)</span></button>
-          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('monthly_exp')" data-tip="tip_tpl_monthly">📄 <span data-i18n="tpl_monthly">نموذج الملخص الشهري</span></button>
-        </div>
-      </div>
+    <section id="tab-upload" class="tab-section">
+      <!-- 3-step guide with live status (renderImportSteps) -->
+      <div class="card import-steps" id="import-steps"></div>
 
       <div class="upload-grid">
         <!-- Box 1: Budget Upload -->
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">📘 <span data-i18n="upload_b_title">استيراد ملف الميزانية التقديرية (Annual / Monthly Budget)</span> <span class="help-tip" data-tip="tip_upload_b">?</span></div>
-              <div class="card-subtitle" data-i18n="upload_b_sub">تتم المطابقة والمقارنة على مستوى رقم الحساب (Account Number)، مع دعم اختياري للأقسام والتصنيفات والالتزامات</div>
+              <div class="card-title"><span class="step-num">1</span> <span data-i18n="upload_b_title">استيراد ملف الميزانية التقديرية (Annual / Monthly Budget)</span> <span class="help-tip" data-tip="tip_upload_b">?</span></div>
+              <div class="card-subtitle" data-i18n="upload_b_sub">تتم المطابقة والمقارنة على مستوى رقم الحساب، مع دعم اختياري للأقسام والتصنيفات والالتزامات</div>
             </div>
             <span id="budget-status-pill" class="pill pill-neutral">--</span>
           </div>
@@ -587,7 +636,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
                   <select id="map-b-cat" class="form-control"></select>
                 </div>
               </div>
-              <div id="map-b-months-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin-bottom:12px;"></div>
+              <div id="map-b-months-grid" class="map-months-grid"></div>
               <button class="btn btn-primary" onclick="applyBudgetMapping()">✅ <span data-i18n="btn_confirm_budget">اعتماد واستيراد بيانات الميزانية</span></button>
             </div>
           </div>
@@ -597,7 +646,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">📕 <span data-i18n="upload_e_title">استيراد المصاريف الفعلية / سجل الأستاذ العام (General Ledger)</span> <span class="help-tip" data-tip="tip_upload_e">?</span></div>
+              <div class="card-title"><span class="step-num">2</span> <span data-i18n="upload_e_title">استيراد المصاريف الفعلية / سجل الأستاذ العام (General Ledger)</span> <span class="help-tip" data-tip="tip_upload_e">?</span></div>
               <div class="card-subtitle" data-i18n="upload_e_sub">يدعم كشف حركات الأستاذ العام التفصيلي بالتاريخ أو ملخص المصاريف الشهري</div>
             </div>
             <span id="exp-status-pill" class="pill pill-neutral">--</span>
@@ -678,7 +727,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
                     <select id="map-em-cat" class="form-control"></select>
                   </div>
                 </div>
-                <div id="map-em-months-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin-bottom:12px;"></div>
+                <div id="map-em-months-grid" class="map-months-grid"></div>
               </div>
 
               <button class="btn btn-primary" onclick="applyExpenseMapping()">✅ <span data-i18n="btn_confirm_exp">اعتماد واستيراد بيانات المصاريف</span></button>
@@ -726,7 +775,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
     <!-- ==========================================
          DASHBOARD: KPIs, CHARTS & MATERIAL VARIANCES (drawn by renderOverview)
     =========================================== -->
-    <section id="tab-overview" class="tab-section"></section>
+    <section id="tab-overview" class="tab-section active"></section>
 
     <!-- ==========================================
          TAB 2: ACCOUNT SUMMARY, COMMITMENTS, MATERIALITY & VARIANCE %
@@ -919,12 +968,20 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <div class="card-title">📅 <span data-i18n="gl_m_title">تحليل التجاوزات الشهرية لسجل الأستاذ العام (GL) حسب التاريخ ورقم الحساب</span> <span class="help-tip" data-tip="tip_gl_monthly">?</span></div>
             <div class="card-subtitle" data-i18n="gl_m_sub">اختر أي شهر لاستعراض القيود والفواتير مرتبة زمنياً، وتحديد القيد الذي أدى إلى تجاوز سقف الميزانية ونسبة التجاوز المئوية (%)</div>
           </div>
-          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        </div>
+        <div id="gl-version-warning" class="info-banner" style="display:none; border-inline-start-color:var(--warning); background:var(--warning-bg);"></div>
+
+        <div class="filter-bar">
+          <div class="form-group" style="min-width:230px;">
+            <label data-i18n="lbl_breach_test">مقارنة كل فاتورة مع</label>
             <select id="gl-breach-mode" class="form-control" onchange="renderGLBreachTab()" data-tip="tip_breach_mode">
               <option value="monthly" data-i18n="opt_bm_monthly">المقارنة مقابل سقف الميزانية الشهرية (Monthly Budget)</option>
               <option value="annual" data-i18n="opt_bm_annual">المقارنة مقابل سقف الميزانية السنوية (Annual Budget)</option>
               <option value="ytd" data-i18n="opt_bm_ytd">المقارنة مقابل الميزانية التراكمية حتى الشهر (YTD Budget)</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_budget_basis">نسخة الميزانية</label>
             <select id="gl-budget-version" class="form-control" onchange="renderGLBreachTab()">
               <option value="orig">Original Budget</option>
               <option value="f3_9">3+9 Forecast</option>
@@ -932,15 +989,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
               <option value="f9_3">9+3 Forecast</option>
             </select>
           </div>
-        </div>
-        <div id="gl-version-warning" class="info-banner" style="display:none; border-inline-start-color:var(--warning); background:var(--warning-bg);"></div>
-
-        <div id="gl-month-cards-container" class="month-grid"></div>
-
-        <div class="filter-bar">
           <div class="form-group">
             <label data-i18n="lbl_month">الشهر (Month)</label>
-            <select id="gl-month-filter" class="form-control" onchange="renderGLBreachTable()">
+            <select id="gl-month-filter" class="form-control" onchange="renderGLBreachTab()">
               <option value="ALL">All 12 Months</option>
               <option value="0">01 - Jan</option>
               <option value="1">02 - Feb</option>
@@ -979,6 +1030,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <input type="text" id="gl-search-input" class="form-control" placeholder="INV-219 / Maintenance..." oninput="renderGLBreachTable()" />
           </div>
         </div>
+
+        <div id="gl-month-cards-container" class="month-grid"></div>
 
         <div class="table-wrapper">
           <table>
@@ -1087,7 +1140,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <label><span data-i18n="ny_method_lbl">منهجية احتساب الميزانية المقترحة</span> <span class="help-tip" data-tip="tip_ny_method">?</span></label>
             <select id="ny-method" class="form-control" onchange="recalculateNextYearProposals(false)">
               <option value="smart" data-i18n="ny_m_smart">منهجية التخطيط الذكي (الاعتماد على 9+3 مع ضبط التجاوزات واستبعاد الاستثنائي)</option>
-              <option value="f9_3" data-i18n="ny_m_93">الاعتماد على توقعات الإغلاق (9+3 Forecast) + معامل النمو (%)</option>
+              <option value="f9_3" data-i18n="ny_m_93">الاعتماد على توقعات الإغلاق (توقعات 9+3) + معامل النمو (%)</option>
               <option value="actual_runrate" data-i18n="ny_m_act">الاعتماد على معدل الصرف الفعلي السنوي + معامل النمو (%)</option>
               <option value="orig" data-i18n="ny_m_orig">الاعتماد على الميزانية الأصلية للسنة الحالية + معامل النمو (%)</option>
             </select>
@@ -1315,23 +1368,23 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         app_title: 'نظام مقارنة ميزانية المصروفات بالمصروفات الفعلية (FP&A)',
         app_subtitle: 'خاص بحسابات المصروفات فقط: مقارنة ميزانية المصروفات بالمصروفات الفعلية والالتزامات، التوقعات المرحلية (3+9 / 6+6 / 9+3)، وتحليل الفواتير المتجاوزة',
         scope_badge: 'للمصروفات فقط',
-        btn_sample_model: 'نموذج بيانات معياري للمعاينة',
+        btn_sample_model: 'تحميل البيانات التجريبية',
         btn_export_excel: 'تصدير التقرير المالي الشامل (Excel)',
         btn_save_json: 'حفظ المشروع',
         btn_load_json: 'فتح مشروع',
-        nav_upload: 'إدخال واستيراد البيانات',
+        nav_upload: 'استيراد البيانات',
         nav_overview: 'لوحة المؤشرات',
-        nav_summary: 'ملخص الحسابات ونسب الأداء',
-        nav_reforecast: 'تحديثات الميزانية (3+9 / 6+6 / 9+3)',
-        nav_monthly_breach: 'تحليل التجاوزات الشهرية',
-        nav_annual_invoices: 'المصاريف المتجاوزة للميزانية سنوياً وشهرياً',
-        nav_next_year: 'مقترح ميزانية السنة القادمة',
+        nav_summary: 'ملخص الحسابات',
+        nav_reforecast: 'التوقعات المرحلية',
+        nav_monthly_breach: 'التجاوزات الشهرية',
+        nav_annual_invoices: 'الفواتير المتجاوزة',
+        nav_next_year: 'ميزانية السنة القادمة',
         banner_upload_info: '<strong>استيراد سلس وآمن للبيانات المالية:</strong> بمجرد رفع ملف الميزانية أو ملف الأستاذ العام (GL)، يقوم النظام تلقائياً باستبدال البيانات المعيارية الافتراضية واعتماد بياناتك الفعلية فوراً.',
         tpl_budget: 'نموذج ملف الميزانية',
         tpl_gl: 'نموذج سجل الأستاذ العام (GL)',
         tpl_monthly: 'نموذج الملخص الشهري',
-        upload_b_title: 'استيراد ملف الميزانية التقديرية (Annual / Monthly Budget)',
-        upload_b_sub: 'تتم المطابقة والمقارنة على مستوى رقم الحساب (Account Number)، مع دعم اختياري للأقسام والتصنيفات والالتزامات',
+        upload_b_title: 'استيراد ملف الميزانية التقديرية (سنوية أو شهرية)',
+        upload_b_sub: 'تتم المطابقة والمقارنة على مستوى رقم الحساب، مع دعم اختياري للأقسام والتصنيفات والالتزامات',
         select_excel_budget: 'اختر ملف الميزانية بصيغة Excel أو CSV:',
         map_b_header: 'مطابقة أعمدة ملف الميزانية:',
         col_acc_no: 'رقم الحساب (Account Number) *',
@@ -1345,10 +1398,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         col_dept_opt: 'القسم / الإدارة (اختياري)',
         col_cat_opt: 'التصنيف / نوع المصروف (اختياري)',
         btn_confirm_budget: 'اعتماد واستيراد بيانات الميزانية',
-        upload_e_title: 'استيراد المصاريف الفعلية / سجل الأستاذ العام (General Ledger)',
+        upload_e_title: 'استيراد المصاريف الفعلية / سجل الأستاذ العام (GL)',
         upload_e_sub: 'يدعم كشف حركات الأستاذ العام التفصيلي بالتاريخ أو ملخص المصاريف الشهري',
-        mode_gl_tx: 'سجل حركات الأستاذ العام (Date, Account, Amount)',
-        mode_monthly_sum: 'ملخص المصاريف الشهري (Jan .. Dec)',
+        mode_gl_tx: 'سجل حركات الأستاذ العام (التاريخ، الحساب، المبلغ)',
+        mode_monthly_sum: 'ملخص المصاريف الشهري (يناير .. ديسمبر)',
         map_e_header: 'مطابقة أعمدة ملف المصاريف / الأستاذ العام:',
         col_inv_date: 'تاريخ القيد / الفاتورة (Date) *',
         col_exp_amt: 'مبلغ المصروف (Amount) *',
@@ -1363,8 +1416,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         stat_acc_count: 'إجمالي الحسابات المسجلة',
         stat_gl_count: 'إجمالي القيود والفواتير المسجلة (GL)',
         stat_last_m: 'آخر فترة مالية مغلقة بالصرف الفعلي',
-        stat_unbudgeted: 'حسابات غير مدرجة بالميزانية (Unbudgeted)',
-        kpi_orig_label: 'الميزانية المعتمدة بداية السنة (Original Budget)',
+        stat_unbudgeted: 'حسابات غير مدرجة بالميزانية',
+        kpi_orig_label: 'الميزانية المعتمدة بداية السنة',
         kpi_prior_sub: 'ميزانية السنة السابقة:',
         kpi_active_label: 'الميزانية المرجعية',
         kpi_diff_orig: 'التغير عن الميزانية الأصلية:',
@@ -1388,7 +1441,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         opt_unb_only: 'الحسابات غير المدرجة بالميزانية',
         opt_within_only: 'الحسابات ضمن سقف الميزانية',
         lbl_mat_threshold: 'حد الأهمية النسبية للانحراف (% / مبلغ)',
-        rf_title: 'تحديثات الميزانية والتوقعات المرحلية (Original / 3+9 / 6+6 / 9+3)',
+        rf_title: 'تحديثات الميزانية والتوقعات المرحلية (الأصلية / 3+9 / 6+6 / 9+3)',
         rf_sub: 'يوضح نسبة الانحراف المئوية (%) لكل شهر، بالإضافة إلى نسبة الانحراف في الأشهر الثلاثة السابقة للاسترشاد بها عند تحديث التوقعات للأشهر القادمة',
         rf_auto_fill_lbl: 'أدوات الاحتساب التلقائي للأشهر المتبقية:',
         btn_copy_orig: 'اعتماد قيم الميزانية الأصلية',
@@ -1397,16 +1450,17 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         btn_run_rate: 'احتساب وفق متوسط الصرف الفعلي الشهري (Run-Rate)',
         gl_m_title: 'تحليل التجاوزات الشهرية لسجل الأستاذ العام (GL) حسب التاريخ ورقم الحساب',
         gl_m_sub: 'اختر أي شهر لاستعراض القيود والفواتير مرتبة زمنياً، وتحديد القيد الذي أدى إلى تجاوز سقف الميزانية ونسبة التجاوز المئوية (%)',
-        opt_bm_monthly: 'المقارنة مقابل سقف الميزانية الشهرية (Monthly Budget)',
-        opt_bm_annual: 'المقارنة مقابل سقف الميزانية السنوية (Annual Budget)',
-        opt_bm_ytd: 'المقارنة مقابل الميزانية التراكمية حتى الشهر (YTD Budget)',
-        lbl_month: 'الشهر (Month)',
-        lbl_acc_filter: 'رقم الحساب (Account Number)',
-        lbl_tx_filter: 'نطاق عرض القيود (Transactions Filter)',
+        opt_bm_monthly: 'المقارنة مقابل سقف الميزانية الشهرية',
+        opt_bm_annual: 'المقارنة مقابل سقف الميزانية السنوية',
+        opt_bm_ytd: 'المقارنة مقابل الميزانية التراكمية حتى الشهر (YTD)',
+        lbl_month: 'الشهر',
+        lbl_acc_filter: 'رقم الحساب',
+        lbl_tx_filter: 'نطاق عرض القيود',
+        lbl_breach_test: 'مقارنة كل فاتورة مع', lbl_budget_basis: 'نسخة الميزانية',
         opt_tx_breach: 'المصاريف المتجاوزة للميزانية فقط (القيد الكاسر وما بعده)',
         opt_tx_first: 'القيد الأول الذي تسبب بتجاوز الميزانية فقط لكل حساب',
         opt_tx_over_all: 'جميع قيود الحسابات المتجاوزة بالتسلسل الزمني',
-        opt_tx_all: 'جميع قيود الأستاذ العام (All GL Entries)',
+        opt_tx_all: 'جميع قيود الأستاذ العام',
         lbl_search_gl: 'بحث في البيان أو رقم المستند أو التاريخ',
         sheet5_banner: '<strong>تقرير المصاريف والفواتير المتجاوزة للميزانية سنوياً وشهرياً (حتى تاريخ إصدار الفاتورة):</strong><br>يستعرض هذا التقرير جميع الفواتير والمصاريف التي تجاوزت الميزانية مرتبة زمنياً، مع بيان: <strong>(1) مقدار ونسبة التجاوز الشهري (%) حتى تاريخ الفاتورة</strong>، و <strong>(2) مقدار ونسبة التجاوز السنوي التراكمي (%) حتى تاريخ إصدار الفاتورة</strong>، بالإضافة إلى مؤشرات الفحص التحليلي للقيود.',
         btn_export_sheet5: 'تصدير هذا التقرير منفصلاً (Excel)',
@@ -1422,7 +1476,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         btn_export_ny: 'تصدير مقترح ميزانية السنة القادمة (Excel)',
         ny_method_lbl: 'منهجية احتساب الميزانية المقترحة',
         ny_m_smart: 'منهجية التخطيط الذكي (الاعتماد على 9+3 مع ضبط التجاوزات واستبعاد الاستثنائي)',
-        ny_m_93: 'الاعتماد على توقعات الإغلاق (9+3 Forecast) + معامل النمو (%)',
+        ny_m_93: 'الاعتماد على توقعات الإغلاق (توقعات 9+3) + معامل النمو (%)',
         ny_m_act: 'الاعتماد على معدل الصرف الفعلي السنوي + معامل النمو (%)',
         ny_m_orig: 'الاعتماد على الميزانية الأصلية للسنة الحالية + معامل النمو (%)',
         ny_growth_lbl: 'معامل النمو / التضخم السنوي (%)',
@@ -1440,7 +1494,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         th_prior_b: 'ميزانية السنة السابقة',
         th_orig_b: 'الميزانية الأصلية',
         th_bench_b: 'الميزانية المرجعية',
-        th_actual_ytd: 'الصرف الفعلي (Actual)',
+        th_actual_ytd: 'الصرف الفعلي',
         th_commitments: 'الالتزامات القائمة (POs)',
         th_net_avail: 'الصافي المتاح / (التجاوز)',
         th_annual_var_pct: 'نسبة الانحراف السنوي %',
@@ -1478,7 +1532,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         th_ny_prop: 'الميزانية المقترحة للسنة القادمة',
         th_ny_vs_orig_amt: 'التغير عن الميزانية الأصلية',
         th_ny_vs_orig_pct: 'نسبة التغير عن الأصلية %',
-        th_ny_vs_act_pct: 'نسبة التغير عن الفعلي %',
+        th_ny_vs_act_pct: 'نسبة التغير عن توقع نهاية السنة %',
         th_ny_rationale: 'مبررات ومنهجية الاحتساب',
         status_over: 'متجاوز للميزانية',
         status_within: 'ضمن الميزانية',
@@ -1490,7 +1544,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         th_ytd_var: 'انحراف YTD',
         th_ytd_var_pct: 'نسبة انحراف YTD %',
         status_unb: 'غير مدرج بالميزانية',
-        badge_material: 'انحراف جوهري (Material)',
+        badge_material: 'انحراف جوهري',
         status_first_breach: '⚡ القيد المسبب للتجاوز',
         status_after_breach: '🚨 زيادة في التجاوز',
         status_both_breach: '🚨 تجاوز سنوي وشهري معاً',
@@ -1507,24 +1561,24 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         flag_duplicate: 'قيد مكرر محتمل',
         flag_clean: 'سليم',
         placeholder_note: 'أضف تفسيراً للانحراف أو الإجراء المتخذ...',
-        model_status_tag: 'الحالة: بيانات المعاينة معروضة',
+        model_status_tag: 'بيانات تجريبية معروضة',
         user_status_tag: 'بيانات المستخدم المعتمدة'
       },
       en: {
         app_title: 'Expense Budget vs. Actual Expenses Analyzer (FP&A)',
         app_subtitle: 'For expense (OPEX) accounts only: Expense Budget vs. Actual Expenses & Commitments, Rolling Forecasts (3+9 / 6+6 / 9+3) & Over-Budget Invoice Tracking',
         scope_badge: 'Expenses only',
-        btn_sample_model: 'Standard Reference Model',
+        btn_sample_model: 'Load sample data',
         btn_export_excel: 'Export Full Financial Report (Excel)',
         btn_save_json: 'Save Project',
         btn_load_json: 'Open Project',
-        nav_upload: 'Data Import & Setup',
+        nav_upload: 'Import Data',
         nav_overview: 'Dashboard',
-        nav_summary: 'Account Summary & Variance %',
-        nav_reforecast: 'Rolling Forecasts (3+9 / 6+6 / 9+3)',
-        nav_monthly_breach: 'Monthly Budget Breach Analysis',
-        nav_annual_invoices: 'Annual & Monthly Over-Budget Expenses',
-        nav_next_year: 'Next Year Budget Proposal',
+        nav_summary: 'Account Summary',
+        nav_reforecast: 'Rolling Forecasts',
+        nav_monthly_breach: 'Monthly Overruns',
+        nav_annual_invoices: 'Over-Budget Invoices',
+        nav_next_year: 'Next Year Budget',
         banner_upload_info: '<strong>Seamless Financial Data Import:</strong> Uploading your Budget or General Ledger (GL) file automatically replaces the reference model with your live data.',
         tpl_budget: 'Budget Template',
         tpl_gl: 'General Ledger (GL) Template',
@@ -1565,7 +1619,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         stat_unbudgeted: 'Unbudgeted Accounts',
         kpi_orig_label: 'Original Approved Budget',
         kpi_prior_sub: 'Prior Year Budget:',
-        kpi_active_label: 'Benchmark Budget',
+        kpi_active_label: 'Comparison Budget',
         kpi_diff_orig: 'Variance vs. Original:',
         kpi_ytd_label: 'Actual Expenses & Commitments',
         kpi_commit_sub: 'Open Commitments (POs):',
@@ -1575,7 +1629,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         kpi_over_amt_sub: 'Total Excess & %:',
         dash_tbl_title: 'Account Financial Performance, Open Commitments, and Monthly & Annual Variance %',
         dash_tbl_sub: 'Includes materiality threshold flags, variance classification, and financial commentary per account',
-        compare_against: 'Benchmark Version:',
+        compare_against: 'Compare against:',
         lbl_closed_month: 'Last closed month:',
         lbl_search_acc: 'Search Account No. or Name',
         lbl_dept: 'Department',
@@ -1588,11 +1642,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         opt_within_only: 'Within Budget Only',
         lbl_mat_threshold: 'Materiality Threshold (% / Amount)',
         rf_title: 'Budget Updates & Rolling Forecasts (Original / 3+9 / 6+6 / 9+3)',
-        rf_sub: 'Displays monthly variance % and Prior 3-Months Variance % to guide upcoming forecast adjustments',
+        rf_sub: 'Displays monthly variance % and Last 3 Months Variance % to guide upcoming forecast adjustments',
         rf_auto_fill_lbl: 'Auto-Populate Open Forecast Months:',
         btn_copy_orig: 'Use Original Budget',
         btn_copy_prev: 'Copy Previous Forecast',
-        btn_apply_3m_pct: 'Adjust Open Months by Prior 3-Months Variance (%)',
+        btn_apply_3m_pct: 'Adjust Open Months by Last 3 Months Variance (%)',
         btn_run_rate: 'Fill by YTD Monthly Run-Rate',
         gl_m_title: 'Monthly General Ledger (GL) Budget Breach Analysis by Date & Account',
         gl_m_sub: 'Select any month to inspect chronological GL entries and pinpoint the exact invoice that breached the budget and its %',
@@ -1602,6 +1656,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         lbl_month: 'Month',
         lbl_acc_filter: 'Account Number',
         lbl_tx_filter: 'Transactions Filter',
+        lbl_breach_test: 'Compare each invoice with', lbl_budget_basis: 'Budget version',
         opt_tx_breach: 'Over-Budget Expenses Only (Triggering Invoice & After)',
         opt_tx_first: 'First Breaching Invoice Only per Account',
         opt_tx_over_all: 'All Transactions of Over-Budget Accounts',
@@ -1638,24 +1693,24 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         th_dept: 'Dept / Category',
         th_prior_b: 'Prior Year Budget',
         th_orig_b: 'Original Budget',
-        th_bench_b: 'Benchmark Budget',
+        th_bench_b: 'Comparison Budget',
         th_actual_ytd: 'Actual Spend',
         th_commitments: 'Open Commitments (POs)',
         th_net_avail: 'Net Available / (Excess)',
         th_annual_var_pct: 'Annual Variance %',
-        th_exposure_pct: 'Exposure vs Full-Year Budget % (Actual + Commitments)',
+        th_exposure_pct: 'Spent + Committed vs Full-Year Budget %',
         th_spend_vs_fy_pct: 'Spend to Date vs Full-Year Budget %',
         th_eac: 'Estimate at Completion (EAC)',
         th_eac_var: 'EAC Variance vs Budget',
         badge_mat_ytd_over: 'Material YTD Variance (Over)',
         badge_mat_ytd_under: 'Material YTD Variance (Under)',
-        th_max_m_pct: 'Max Monthly Breach %',
+        th_max_m_pct: 'Largest Monthly Overrun %',
         th_breach_months: 'Breached Months',
         th_var_type: 'Variance Nature',
         th_exp_note: 'Financial Commentary & Notes',
         th_status: 'Status & Materiality',
         th_total: 'Grand Total',
-        th_prior_3m_pct: 'Prior 3-Months Variance %',
+        th_prior_3m_pct: 'Last 3 Months Variance %',
         th_ver_total: 'Version Total',
         th_var_vs_orig: 'Var vs. Original',
         th_var_vs_orig_pct: 'Var vs. Original %',
@@ -1677,7 +1732,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         th_ny_prop: 'Proposed Next Year Budget',
         th_ny_vs_orig_amt: 'Diff vs. Original',
         th_ny_vs_orig_pct: 'Change vs. Original %',
-        th_ny_vs_act_pct: 'Change vs. Actuals %',
+        th_ny_vs_act_pct: 'Change vs. Year-End Estimate %',
         th_ny_rationale: 'Calculation Rationale',
         status_over: 'Over Budget',
         status_within: 'Within Budget',
@@ -1706,7 +1761,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         flag_duplicate: 'Possible Duplicate Entry',
         flag_clean: 'Normal',
         placeholder_note: 'Add variance explanation or corrective action...',
-        model_status_tag: 'Status: preview data shown',
+        model_status_tag: 'Sample data shown',
         user_status_tag: 'Active User Dataset'
       }
     };
@@ -1718,17 +1773,17 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       ar: {
         tip_scope: { title: 'نطاق الأداة: حسابات المصروفات فقط', body: 'صُممت المقارنة لحسابات المصروفات: الصرف الزائد عن الميزانية = تجاوز غير مرغوب، والصرف الأقل = وفر. لا تُستخدم لحسابات الإيرادات، لأن تجاوز ميزانية الإيرادات يُعد أمراً إيجابياً وستظهر نتائجه بشكل معكوس.' },
         tip_lang: { title: 'تبديل لغة الواجهة', body: 'يغير لغة عرض لوحة التحكم والتقارير بين العربية الفصحى والإنجليزية مع الحفاظ التام على بياناتك وأسماء الحسابات كما رفعتها.' },
-        tip_sample: { title: 'نموذج البيانات المعياري', body: 'يعيد تحميل نموذج مالي متكامل لتجربة خصائص النظام ومشاهدة طريقة عمل التوقعات وتحليل الفواتير.' },
+        tip_sample: { title: 'تحميل البيانات التجريبية', body: 'يعيد تحميل نموذج مالي متكامل لتجربة خصائص النظام ومشاهدة طريقة عمل التوقعات وتحليل الفواتير.' },
         tip_export_all: { title: 'تصدير التقرير المالي الشامل (Excel)', body: 'يُصدر ملف Excel متعدد الأوراق يبدأ بلوحة مؤشرات تفاعلية (اختر الشهر والقسم من القائمتين لتتحدث الأرقام والرسوم)، ثم ملخص الحسابات، التوقعات المرحلية، التجاوزات الشهرية، المصاريف المتجاوزة سنوياً وشهرياً، مقترح السنة القادمة، وسجل التعديلات.' },
         tip_save_json: { title: 'حفظ ملف المشروع', body: 'يحفظ جميع الحسابات والقيود والتعديلات والملاحظات التفسيرية في ملف على جهازك لاستكمال العمل عليه لاحقاً.' },
         tip_load_json: { title: 'فتح مشروع محفوظ', body: 'يسترجع مشروعاً مالياً قمت بحفظه مسبقاً بكافة تفاصيله وتوقعاته.' },
-        tip_nav_upload: { title: 'إدخال واستيراد البيانات', body: 'الخطوة الأولى: ارفع ملف الميزانية وملف المصاريف الفعلية (أو سجل الأستاذ العام GL) ليقوم النظام بمطابقتها على مستوى رقم الحساب.' },
+        tip_nav_upload: { title: 'استيراد البيانات', body: 'الخطوة الأولى: ارفع ملف الميزانية وملف المصاريف الفعلية (أو سجل الأستاذ العام GL) ليقوم النظام بمطابقتها على مستوى رقم الحساب.' },
         tip_nav_overview: { title: 'لوحة المؤشرات', body: 'أداء الميزانية في صفحة واحدة: المؤشرات الرئيسية، الصرف الشهري مقابل الميزانية، أكبر الانحرافات، الانتقال من الميزانية إلى توقع السنة الكاملة، واستهلاك الميزانية حسب القسم، مع جدول الانحرافات الجوهرية. اختر الفترة والقسم من أعلى الصفحة.' },
-        tip_nav_summary: { title: 'ملخص الحسابات ونسب الأداء', body: 'لوحة مقارنة شاملة لكل رقم حساب توضح الميزانية، الصرف الفعلي، الالتزامات القائمة، الصافي المتاح، والأهمية النسبية للانحرافات.' },
-        tip_nav_rf: { title: 'التوقعات المرحلية (Rolling Forecasts)', body: 'تحديث توقعات الميزانية خلال السنة (3+9 و 6+6 و 9+3) بدمج الأشهر الفعلية المغلقة مع التقديرات المحدثة للأشهر المتبقية.' },
-        tip_nav_monthly: { title: 'تحليل التجاوزات الشهرية', body: 'فحص تفصيلي لكل شهر على حدة لتحديد أي قيد أو فاتورة تسببت في كسر سقف الميزانية الشهرية بالتسلسل الزمني.' },
-        tip_nav_annual: { title: 'المصاريف المتجاوزة للميزانية سنوياً وشهرياً', body: 'يعرض لكل فاتورة متجاوزة كلاً من: التجاوز الشهري وتاريخه، والتجاوز السنوي التراكمي حتى لحظة إصدار الفاتورة، مع مؤشرات الفحص التحليلي.' },
-        tip_nav_ny: { title: 'مقترح ميزانية السنة القادمة', body: 'يحتسب آلياً الميزانية المقترحة للعام القادم مع استبعاد المصاريف المصنفة كـ (مصروف استثنائي غير متكرر) كي لا تتضخم ميزانية العام القادم.' },
+        tip_nav_summary: { title: 'ملخص الحسابات', body: 'لوحة مقارنة شاملة لكل رقم حساب توضح الميزانية، الصرف الفعلي، الالتزامات القائمة، الصافي المتاح، والأهمية النسبية للانحرافات.' },
+        tip_nav_rf: { title: 'التوقعات المرحلية', body: 'تحديث توقعات الميزانية خلال السنة (3+9 و 6+6 و 9+3) بدمج الأشهر الفعلية المغلقة مع التقديرات المحدثة للأشهر المتبقية.' },
+        tip_nav_monthly: { title: 'التجاوزات الشهرية', body: 'شهراً بشهر: أي الأشهر تجاوزت ميزانيتها، والفاتورة التي تسببت بتجاوز ميزانية كل شهر وكل ما بعدها.' },
+        tip_nav_annual: { title: 'الفواتير المتجاوزة', body: 'قائمة واحدة بكل فاتورة تسببت بتجاوز الميزانية، مع التجاوز الشهري والتجاوز السنوي حتى تاريخ الفاتورة.' },
+        tip_nav_ny: { title: 'ميزانية السنة القادمة', body: 'يحتسب آلياً الميزانية المقترحة للعام القادم مع استبعاد المصاريف المصنفة كـ (مصروف استثنائي غير متكرر) كي لا تتضخم ميزانية العام القادم.' },
         tip_tpl_budget: { title: 'تحميل نموذج الميزانية', body: 'ملف Excel جاهز يوضح الأعمدة القياسية للميزانية السنوية أو الشهرية لملئه ورفعه بسهولة.' },
         tip_tpl_gl: { title: 'تحميل نموذج الأستاذ العام (GL)', body: 'ملف Excel جاهز لحركات المصاريف التفصيلية (التاريخ، رقم الحساب، المبلغ، رقم الفاتورة، البيان).' },
         tip_tpl_monthly: { title: 'تحميل نموذج الملخص الشهري', body: 'ملف Excel جاهز لمن يرغب برفع المصاريف الفعلية كإجماليات شهرية بدلاً من القيود التفصيلية.' },
@@ -1777,17 +1832,17 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       en: {
         tip_scope: { title: 'Scope: expense accounts only', body: 'The comparison is designed for expense accounts: spending above budget = unfavorable overrun, spending below budget = saving. Do not use it for revenue accounts, where exceeding budget is favorable and results would read in reverse.' },
         tip_lang: { title: 'Switch Interface Language', body: 'Toggles the dashboard between Formal Arabic (RTL) and Corporate English (LTR) while keeping your uploaded account names and descriptions intact.' },
-        tip_sample: { title: 'Standard Reference Model', body: 'Loads a comprehensive financial dataset to preview rolling forecasts, breach tracking, and variance analytics.' },
+        tip_sample: { title: 'Load sample data', body: 'Loads a comprehensive financial dataset to preview rolling forecasts, breach tracking, and variance analytics.' },
         tip_export_all: { title: 'Export Full Excel Report', body: 'Generates a multi-sheet Excel workbook that opens on an interactive dashboard (pick the month and department from the two dropdowns and the figures and charts update), followed by Account Summary, Rolling Forecasts, Monthly Breaches, Annual & Monthly Over-Budget Invoices, Next Year Proposal, and the Change Log.' },
         tip_save_json: { title: 'Save Project File', body: 'Saves all accounts, GL transactions, rolling forecasts, commitments, and commentary into a local JSON file.' },
         tip_load_json: { title: 'Open Saved Project', body: 'Restores a previously saved JSON project file with all forecasts and notes.' },
-        tip_nav_upload: { title: 'Data Import & Setup', body: 'Upload your Budget and Actual Expenses (or full-year GL log) to match and compare automatically by Account Number.' },
+        tip_nav_upload: { title: 'Import Data', body: 'Upload your Budget and Actual Expenses (or full-year GL log) to match and compare automatically by Account Number.' },
         tip_nav_overview: { title: 'Dashboard', body: 'Budget performance on one page: key figures, monthly spend against budget, the largest variances, the path from budget to full-year forecast, budget use by department, and the material variances table. Choose the period and department at the top.' },
-        tip_nav_summary: { title: 'Account Summary & Variance %', body: 'Complete account-level view showing Budget, Actuals, Open Commitments, Net Available Balance, Materiality flags, and Explanatory Notes.' },
-        tip_nav_rf: { title: 'Rolling Forecasts (3+9 / 6+6 / 9+3)', body: 'Update full-year expectations by locking closed actual months and forecasting remaining open months.' },
-        tip_nav_monthly: { title: 'Monthly Budget Breach Analysis', body: 'Inspect chronological GL transactions within any month to pinpoint the exact invoice that breached the monthly budget.' },
-        tip_nav_annual: { title: 'Annual & Monthly Over-Budget Expenses', body: 'Displays side-by-side for every breaching invoice: Monthly Excess & % and Full-Year Cumulative Excess & % up to the invoice date, plus analytical flags.' },
-        tip_nav_ny: { title: 'Next Year Budget Proposal', body: 'Automatically calculates next year budget proposals while excluding expenses classified as One-Off Extraordinary items.' },
+        tip_nav_summary: { title: 'Account Summary', body: 'Complete account-level view showing Budget, Actuals, Open Commitments, Net Available Balance, Materiality flags, and Explanatory Notes.' },
+        tip_nav_rf: { title: 'Rolling Forecasts', body: 'Update full-year expectations by locking closed actual months and forecasting remaining open months.' },
+        tip_nav_monthly: { title: 'Monthly Overruns', body: 'Month by month: which months went over budget, and the exact invoice that broke each monthly budget plus every invoice after it.' },
+        tip_nav_annual: { title: 'Over-Budget Invoices', body: 'One list of every invoice that pushed spending over budget, with both the monthly and the full-year overrun up to the invoice date.' },
+        tip_nav_ny: { title: 'Next Year Budget', body: 'Automatically calculates next year budget proposals while excluding expenses classified as One-Off Extraordinary items.' },
         tip_tpl_budget: { title: 'Download Budget Template', body: 'Ready-to-use Excel template showing standard columns for annual or 12-month budgets.' },
         tip_tpl_gl: { title: 'Download GL Template', body: 'Ready-to-use Excel template for chronological General Ledger transactions (Date, Account, Amount, Ref, Description).' },
         tip_tpl_monthly: { title: 'Download Monthly Summary Template', body: 'Excel template for uploading monthly actual totals (Jan..Dec) when detailed GL entries are not used.' },
@@ -1800,11 +1855,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         tip_stat_lastm: { title: 'Last Closed Actual Month', body: 'Set automatically from the latest month with actual expenses; you can pin it manually to the month you have actually closed. Drives the YTD comparison, actual-month locks in rolling forecasts, the run-rate and the prior 3-month trend.' },
         tip_stat_unb: { title: 'Unbudgeted Accounts', body: 'Accounts that incurred actual expenses in the GL but had zero approved budget allocated.' },
         tip_kpi_orig: { title: 'Original Approved Budget', body: 'Total baseline budget approved at the start of the fiscal year before any rolling revisions.' },
-        tip_kpi_active: { title: 'Benchmark Budget', body: 'Currently selected comparison baseline (Original, 3+9, 6+6, or 9+3 Forecast).' },
+        tip_kpi_active: { title: 'Comparison Budget', body: 'Currently selected comparison baseline (Original, 3+9, 6+6, or 9+3 Forecast).' },
         tip_kpi_ytd: { title: 'Actual Spend & Commitments', body: 'Total posted actual expenses plus open purchase orders/commitments.' },
-        tip_kpi_rem: { title: 'Net Available Budget', body: 'Remaining unencumbered balance for the year: Benchmark Budget minus (Actuals + Open Commitments).' },
-        tip_kpi_over: { title: 'Over-Budget Accounts', body: 'Number of accounts where Actuals + Commitments exceed the Benchmark Budget, along with total excess amount and %.' },
-        tip_benchmark_ver: { title: 'Select Benchmark Version', body: 'Choose whether to measure variances against the Original Budget or an updated Rolling Forecast (3+9, 6+6, 9+3).' },
+        tip_kpi_rem: { title: 'Net Available Budget', body: 'Remaining unencumbered balance for the year: Comparison Budget minus (Actuals + Open Commitments).' },
+        tip_kpi_over: { title: 'Over-Budget Accounts', body: 'Number of accounts where Actuals + Commitments exceed the Comparison Budget, along with total excess amount and %.' },
+        tip_benchmark_ver: { title: 'Choose What to Compare Against', body: 'Choose whether to measure variances against the Original Budget or an updated Rolling Forecast (3+9, 6+6, 9+3).' },
         tip_materiality: { title: 'Variance Materiality Threshold', body: 'Flags an over-budget variance as "Material" when it exceeds BOTH the specified percentage (%) and monetary amount thresholds.' },
         tip_rf_concept: { title: 'What are Rolling Forecasts?', body: 'Periodic re-projections during the year: 3+9 (3 actual + 9 forecast months), 6+6 (6 actual + 6 forecast), and 9+3 (9 actual + 3 forecast).' },
         tip_ver_orig: { title: 'Original Budget', body: 'View and edit the baseline monthly budget allocations.' },
@@ -1815,7 +1870,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         tip_rf_autofill: { title: 'Auto-Forecasting Tools', body: 'Quickly populate open forecast months using prior 3-month variance trends, YTD run-rates, or baseline values.' },
         tip_btn_orig: { title: 'Use Original Budget', body: 'Resets open forecast months in the active version back to Original Budget figures.' },
         tip_btn_prev: { title: 'Copy Previous Forecast', body: 'Copies open forecast months from the preceding forecast cycle (e.g. from 3+9 into 6+6).' },
-        tip_btn_3m: { title: 'Adjust by Prior 3-Months Variance (%)', body: 'Calculates the actual variance % over the last 3 closed months and scales open forecast months by that exact percentage.' },
+        tip_btn_3m: { title: 'Adjust by Last 3 Months Variance (%)', body: 'Calculates the actual variance % over the last 3 closed months and scales open forecast months by that exact percentage.' },
         tip_btn_runrate: { title: 'Fill by YTD Monthly Run-Rate', body: 'Sets each open forecast month equal to the account’s average monthly actual spend so far.' },
         tip_gl_monthly: { title: 'How Monthly Breach Analysis Works', body: 'Accumulates invoices chronologically within each month per account and highlights the exact invoice that crosses the budget ceiling.' },
         tip_breach_mode: { title: 'Breach Comparison Basis', body: 'Choose whether to test each invoice against the single Month Budget, YTD Cumulative Budget, or Full-Year Annual Budget.' },
@@ -1824,10 +1879,10 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         tip_ny_method: { title: 'Calculation Methodology', body: 'Select the baseline formula for next year (Smart Planning, 9+3 Forecast, Annualized Run-Rate, or Original Budget).' },
         tip_ny_over_rule: { title: 'Over-Budget Treatment Policy', body: 'Controls whether current-year cost overruns are capped at 50%, fully absorbed, or strictly held to original budget limits.' },
         tip_col_commit: { title: 'Open Commitments (POs)', body: 'Approved Purchase Orders or contracts not yet invoiced in GL; deducted from budget to show true Net Available funds.' },
-        tip_col_net_avail: { title: 'Net Available Balance', body: 'Equals Benchmark Budget minus (Actual Spend + Open Commitments). Negative values in parentheses indicate budget overrun.' },
+        tip_col_net_avail: { title: 'Net Available Balance', body: 'Equals Comparison Budget minus (Actual Spend + Open Commitments). Negative values in parentheses indicate budget overrun.' },
         tip_col_ytd: { title: 'Year-to-Date Comparison', body: 'Compares actual spend from January through the last closed month against the Original Budget for the same months only, not the full-year budget. A positive value means overspend to date.' },
         tip_col_eac: { title: 'Estimate at Completion (EAC)', body: 'Actual spend through the last closed month + remaining months from the latest forecast version (3+9, 6+6 or 9+3 depending on closed months), compared with the full-year Original Budget. This is the expected full-year variance at year end.' },
-        tip_col_exposure: { title: 'Exposure vs Full-Year Budget', body: '(Actual spend to date + open commitments − full-year budget) ÷ full-year budget. A budget-consumption / funds-availability indicator, not the expected full-year variance (see EAC).' },
+        tip_col_exposure: { title: 'Spent + Committed vs Full-Year Budget', body: '(Actual spend to date + open commitments − full-year budget) ÷ full-year budget. A budget-consumption / funds-availability indicator, not the expected full-year variance (see EAC).' },
         tip_freeze: { title: 'Approve & Freeze Forecast Version', body: 'Keeps the version exactly as at approval: it does not change with new or late postings and cannot be edited until unfrozen. The action is recorded in the change log.' },
         tip_col_vtype: { title: 'Variance Root-Cause Classification', body: 'Classify variance as Timing, Ongoing Run-Rate, or One-Off. Selecting "One-Off Extraordinary Expense" automatically excludes the overrun from Next Year’s proposed budget.' },
         tip_col_flags: { title: 'Analytical Review Indicators', body: 'Automated checks highlighting split invoices within 3 days, month-end spend spikes (days 28–31), missing reference numbers, or possible duplicates (same account and amount with the same reference or the same date).' }
@@ -1967,6 +2022,14 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         document.addEventListener('touchstart', (e) => { if (!e.target.closest('.help-tip')) hide(); }, { passive: true });
       }
 
+      // "?" badges explain right away. Buttons, tabs and other controls explain only after the pointer
+      // rests on them, so moving across the page does not pop up explanations everywhere.
+      let tipTimer = null, lastEvt = null;
+      const showTip = (tipObj, e) => {
+        tooltipEl.innerHTML = `<div class="tt-title">💡 ${escapeHtml(tipObj.title)}</div><div>${escapeHtml(tipObj.body)}</div>`;
+        tooltipEl.style.display = 'block';
+        positionTooltip(e, tooltipEl);
+      };
       document.addEventListener('mouseover', (e) => {
         const target = e.target.closest('[data-tip]');
         if (!target) return;
@@ -1974,13 +2037,14 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         const tipKey = target.getAttribute('data-tip');
         const tipObj = TIPS[currentLang] && TIPS[currentLang][tipKey];
         if (!tipObj) return;
-
-        tooltipEl.innerHTML = `<div class="tt-title">💡 ${escapeHtml(tipObj.title)}</div><div>${escapeHtml(tipObj.body)}</div>`;
-        tooltipEl.style.display = 'block';
-        positionTooltip(e, tooltipEl);
+        clearTimeout(tipTimer);
+        lastEvt = e;
+        if (target.classList.contains('help-tip')) { showTip(tipObj, e); return; }
+        tipTimer = setTimeout(() => { if (target.matches(':hover')) showTip(tipObj, lastEvt); }, 900);
       });
 
       document.addEventListener('mousemove', (e) => {
+        lastEvt = e;
         if (tooltipEl.style.display === 'block') {
           positionTooltip(e, tooltipEl);
         }
@@ -1989,6 +2053,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       document.addEventListener('mouseout', (e) => {
         const target = e.target.closest('[data-tip]');
         if (target && !target.contains(e.relatedTarget)) {
+          clearTimeout(tipTimer);
           tooltipEl.style.display = 'none';
         }
       });
@@ -2074,16 +2139,32 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         const sel = document.getElementById(id);
         if (sel) [...sel.options].forEach(o => { if (verLabels[o.value]) o.textContent = verLabels[o.value]; });
       });
+      // Forecast version buttons and month filters in the selected language
+      const rfLabels = isAr
+        ? { orig: '📘 الميزانية الأصلية', '3_9': '🌓 توقعات 3+9', '6_6': '🌗 توقعات 6+6', '9_3': '🌖 توقعات 9+3', actual: '📕 الفعلي ونسب الأشهر' }
+        : { orig: '📘 Original Budget', '3_9': '🌓 3+9 Forecast', '6_6': '🌗 6+6 Forecast', '9_3': '🌖 9+3 Forecast', actual: '📕 Actuals & Monthly %' };
+      Object.keys(rfLabels).forEach(k => { const b = document.getElementById('rf-btn-' + k); if (b) b.textContent = rfLabels[k]; });
+      const mNamesUi = getMonthNames();
+      [['gl-month-filter', isAr ? 'جميع الأشهر' : 'All 12 Months'], ['s5-month-filter', isAr ? 'جميع الأشهر' : 'All Months']].forEach(([id, allLbl]) => {
+        const sel = document.getElementById(id);
+        if (sel) [...sel.options].forEach(o => { o.textContent = o.value === 'ALL' ? allLbl : `${String(+o.value + 1).padStart(2, '0')} - ${mNamesUi[+o.value]}`; });
+      });
       updateUploadPills();
     }
 
     function updateUploadPills() {
       const bPill = document.getElementById('budget-status-pill');
       const ePill = document.getElementById('exp-status-pill');
-      const label = appState.isReferenceModel ? t('model_status_tag') : t('user_status_tag');
-      const cls = appState.isReferenceModel ? 'pill pill-info' : 'pill pill-success';
-      if (bPill) { bPill.className = cls; bPill.textContent = label; }
-      if (ePill) { ePill.className = cls; ePill.textContent = label; }
+      const s = getImportState();
+      const set = (el, cls, label) => { if (el) { el.className = 'pill ' + cls; el.textContent = label; } };
+      if (s.sample) {
+        set(bPill, 'pill-info', t('model_status_tag'));
+        set(ePill, 'pill-info', t('model_status_tag'));
+        return;
+      }
+      set(bPill, s.budget ? 'pill-success' : 'pill-warning', s.budget ? ux('pill_b_done', { n: s.budgetN }) : ux('pill_waiting'));
+      set(ePill, s.exp ? 'pill-success' : 'pill-warning',
+        s.exp ? (s.expMonthlyOnly ? ux('pill_e_done_monthly') : ux('pill_e_done', { n: s.expN })) : ux('pill_waiting'));
     }
 
     function switchTab(tabId) {
@@ -2104,6 +2185,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       }
       // The dashboard charts are sized to the visible width, so draw them once the tab is shown
       if (tabId === 'tab-overview') renderOverview();
+      renderSampleBar();
+      scheduleFrozenColumns();
     }
 
     // ============================================================================
@@ -2466,9 +2549,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       const catFilter = (document.getElementById('dash-cat-filter') || {}).value || 'ALL';
       const statusFilter = (document.getElementById('dash-status-filter') || {}).value || 'ALL';
 
-      const verLabels = { orig: 'Original', f3_9: '3+9 Forecast', f6_6: '6+6 Forecast', f9_3: '9+3 Forecast' };
+      const verLabels = currentLang === 'ar'
+        ? { orig: 'الأصلية', f3_9: 'توقعات 3+9', f6_6: 'توقعات 6+6', f9_3: 'توقعات 9+3' }
+        : { orig: 'Original', f3_9: '3+9 Forecast', f6_6: '6+6 Forecast', f9_3: '9+3 Forecast' };
       const verLblEl = document.getElementById('kpi-active-version-label');
-      if (verLblEl) verLblEl.textContent = verLabels[ver] || 'Original';
+      if (verLblEl) verLblEl.textContent = verLabels[ver] || verLabels.orig;
 
       const thead = document.getElementById('dash-table-head');
       const tbody = document.getElementById('dash-table-body');
@@ -2577,12 +2662,12 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           statusHtml = `<span class="pill pill-warning">${t('status_ytd_over')}</span>`;
         }
         if (isMaterialAnnual) {
-          statusHtml += ` <div style="margin-top:4px;"><span class="pill pill-danger" style="background:#991b1b; color:#fff;">🔥 ${t('badge_material')}</span></div>`;
+          statusHtml += `<span class="pill pill-danger" style="background:#991b1b; color:#fff;">🔥 ${t('badge_material')}</span>`;
         }
         if (ytdMat === 'over') {
-          statusHtml += ` <div style="margin-top:4px;"><span class="pill pill-danger">📈 ${t('badge_mat_ytd_over')}</span></div>`;
+          statusHtml += `<span class="pill pill-danger">📈 ${t('badge_mat_ytd_over')}</span>`;
         } else if (ytdMat === 'under') {
-          statusHtml += ` <div style="margin-top:4px;"><span class="pill pill-purple">📉 ${t('badge_mat_ytd_under')}</span></div>`;
+          statusHtml += `<span class="pill pill-purple">📉 ${t('badge_mat_ytd_under')}</span>`;
         }
 
         const varPctClass = annualVarPct > 0 ? 'pct-over' : 'pct-under';
@@ -2591,7 +2676,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         rowsHtml += `
           <tr class="${isOverAnnual ? 'row-breach' : ''}">
             <td class="num" style="font-weight:800;">${escapeHtml(acc.accountNo)}</td>
-            <td style="font-weight:700;">${escapeHtml(acc.accountName)}</td>
+            <td style="font-weight:700; min-width:150px;">${escapeHtml(acc.accountName)}</td>
             <td><span class="pill pill-neutral">${escapeHtml(acc.department)} / ${escapeHtml(acc.category)}</span></td>
             <td class="num">${fmtMoney(acc.priorYearBudget)}</td>
             <td class="num">${fmtMoney(origAnnual)}</td>
@@ -2611,8 +2696,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <td class="num" style="background:rgba(22,163,74,0.05); font-weight:700;">${fmtMoney(eac.eac)}</td>
             <td style="background:rgba(22,163,74,0.05);"><div class="num" style="font-weight:800; color:${eac.variance > 0 ? 'var(--danger)' : 'var(--success)'};">${fmtMoney(eac.variance)}</div><span class="pct-badge ${eac.variance > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(eac.pct)}</span></td>
             <td><span class="pct-badge ${breachedMonthsList.length > 0 ? 'pct-over' : 'pct-neutral'}">${maxMPctStr}</span></td>
-            <td style="font-size:11px; max-width:140px; white-space:normal;">
-              ${breachedMonthsList.length > 0 ? breachedMonthsList.map(m => `<span class="pill pill-danger" style="margin:1px;">${m}</span>`).join(' ') : '-'}
+            <td style="font-size:11.5px; min-width:150px; white-space:normal;">
+              ${breachedMonthsList.length > 0 ? `<span class="pill pill-danger">${breachedMonthsList.length}</span> <span style="color:var(--danger); font-weight:700;">${escapeHtml(monthRangesText(breachedMonthsList))}</span>` : '-'}
             </td>
             <td>
               <select class="table-select" onchange="updateAccountVarianceType(${jsArg(acc.accountNo)}, this.value)">
@@ -2628,7 +2713,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
                 value="${escapeHtml(acc.explanatoryNote || '')}"
                 onchange="updateAccountNote(${jsArg(acc.accountNo)}, this.value)" />
             </td>
-            <td>${statusHtml}</td>
+            <td style="min-width:300px;"><div class="pill-row">${statusHtml}</div></td>
           </tr>
         `;
       });
@@ -2643,7 +2728,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       tfoot.innerHTML = `
         <tr>
-          <td colspan="3">${t('th_total')}</td>
+          <td colspan="2">${t('th_total')}</td><td></td>
           <td class="num">${fmtMoney(totPrior)}</td>
           <td class="num">${fmtMoney(totOrig)}</td>
           <td class="num">${fmtMoney(totBench)}</td>
@@ -2765,7 +2850,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         if (ver === 'orig') legendEl.textContent = currentLang === 'ar' ? '📘 الميزانية الأصلية: جميع الأشهر الـ 12 قابلة للتعديل' : '📘 Original Budget: All 12 months editable';
         else if (ver === 'actual') legendEl.textContent = currentLang === 'ar' ? '📕 المصاريف الفعلية ونسبة الانحراف الشهرية (%) مقابل الميزانية الأصلية' : '📕 Actual Expenses & Monthly Variance % vs. Original Budget';
         else legendEl.textContent = currentLang === 'ar'
-          ? `🔄 أول ${lockedMonths} أشهر مثبتة بالصرف الفعلي (Actual) + ${12 - lockedMonths} أشهر متبقية مفتوحة للتوقع`
+          ? `🔄 أول ${lockedMonths} أشهر مثبتة بالصرف الفعلي + ${12 - lockedMonths} أشهر متبقية مفتوحة للتوقع`
           : `🔄 First ${lockedMonths} months locked to Actuals + remaining ${12 - lockedMonths} months open for Forecast`;
       }
 
@@ -2809,7 +2894,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       for (let m = 0; m < 12; m++) {
         const isLockedActual = m < effLocked && ver !== 'orig';
-        const tag = ver === 'orig' ? 'Budget' : (ver === 'actual' ? 'Actual' : (isLockedActual ? 'Actual' : 'Forecast'));
+        const tagW = currentLang === 'ar' ? { b: 'ميزانية', a: 'فعلي', f: 'توقع' } : { b: 'Budget', a: 'Actual', f: 'Forecast' };
+        const tag = ver === 'orig' ? tagW.b : (ver === 'actual' ? tagW.a : (isLockedActual ? tagW.a : tagW.f));
         headHtml += `<th>${mNames[m]}<br><span style="font-size:10px; opacity:0.8;">(${tag})</span></th>`;
       }
       headHtml += `
@@ -2873,7 +2959,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         rowsHtml += `
           <tr>
             <td class="num" style="font-weight:800;">${escapeHtml(acc.accountNo)}</td>
-            <td style="font-weight:700;">${escapeHtml(acc.accountName)}</td>
+            <td style="font-weight:700; min-width:150px;">${escapeHtml(acc.accountName)}</td>
             <td><span class="pct-badge ${p3mClass}">${fmtPct(p3m.pct)}</span></td>
             ${cellsHtml}
             <td class="num" style="font-weight:800;">${fmtMoney(verTotal)}</td>
@@ -2890,7 +2976,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       const grandDiffPct = grandOrigTotal > 0 ? (grandDiff / grandOrigTotal) * 100 : 0;
       tfoot.innerHTML = `
         <tr>
-          <td colspan="3">${t('th_total')}</td>
+          <td colspan="2">${t('th_total')}</td><td></td>
           ${colTotals.map(v => `<td class="num">${fmtMoney(v)}</td>`).join('')}
           <td class="num">${fmtMoney(grandVerTotal)}</td>
           <td class="num">${fmtMoney(grandOrigTotal)}</td>
@@ -3115,6 +3201,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       if (container) {
         let cardsHtml = '';
+        const lastClosedIdx = getLastActualMonthIndex();
         for (let m = 0; m < 12; m++) {
           let mBudget = 0, mActual = 0;
           Object.values(appState.accounts).forEach(acc => {
@@ -3125,20 +3212,24 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           const mRows = allRows.filter(r => r.monthIndex === m && r.isOver);
           const mVarPct = mBudget > 0 ? ((mActual - mBudget) / mBudget) * 100 : 0;
           const isSelected = String(m) === String(currentMonthFilter);
+          const isOpen = m > lastClosedIdx;
 
           cardsHtml += `
-            <div class="month-card ${mRows.length > 0 ? 'has-breach' : ''} ${isSelected ? 'active' : ''}" onclick="selectMonthCard('${m}')">
+            <div class="month-card ${mRows.length > 0 ? 'has-breach' : ''} ${isSelected ? 'active' : ''} ${isOpen ? 'is-open' : ''}" onclick="selectMonthCard('${m}')">
               <div class="month-card-title">
                 <span>${mNames[m]}</span>
-                <span class="pct-badge ${mVarPct > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(mVarPct)}</span>
+                ${isOpen
+                  ? `<span class="pct-badge pct-neutral">${ux('open_month')}</span>`
+                  : `<span class="pct-badge ${mVarPct > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(mVarPct)}</span>`}
               </div>
               <div style="font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between;">
                 <span>B: <strong class="num">${fmtMoney(mBudget)}</strong></span>
                 <span>A: <strong class="num">${fmtMoney(mActual)}</strong></span>
               </div>
-              <div style="margin-top:4px; font-size:11px; font-weight:700; color:${mRows.length > 0 ? 'var(--danger)' : 'var(--success)'};">
+              <div style="margin-top:4px; font-size:11px; font-weight:700; color:${mRows.length > 0 ? 'var(--danger)' : isOpen ? 'var(--text-muted)' : 'var(--success)'};">
                 ${mRows.length > 0
                   ? (currentLang === 'ar' ? `🚨 ${mRows.length} فاتورة متجاوزة` : `🚨 ${mRows.length} Breaching Invoices`)
+                  : isOpen ? ux('not_closed')
                   : (currentLang === 'ar' ? '✅ ضمن السقف' : '✅ Within Limit')}
               </div>
             </div>
@@ -3227,9 +3318,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <td class="num" style="font-weight:700;">${escapeHtml(r.date)}</td>
             <td>${mNames[r.monthIndex] || '-'}</td>
             <td class="num" style="font-weight:800;">${escapeHtml(r.accountNo)}</td>
-            <td style="font-weight:700;">${escapeHtml(r.accountName)}</td>
+            <td style="font-weight:700; min-width:140px;">${escapeHtml(r.accountName)}</td>
             <td class="num">${escapeHtml(r.refNo || '-')}</td>
-            <td style="max-width:210px; white-space:normal;">${escapeHtml(r.description)}</td>
+            <td style="min-width:200px; max-width:320px; white-space:normal;">${escapeHtml(r.description)}</td>
             <td class="num" style="font-weight:800;">${fmtMoney(r.amount)}</td>
             <td class="num">${fmtMoney(r.limitAmt)}</td>
             <td class="num" style="font-weight:700;">${fmtMoney(r.cumCompared)}</td>
@@ -3248,7 +3339,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       tbody.innerHTML = (html + moreRowsHtml('gl', glShown.length, filtered.length, 14)) || `<tr><td colspan="14" style="text-align:center; padding:24px;">-</td></tr>`;
       tfoot.innerHTML = `
         <tr>
-          <td colspan="7">${t('th_total')} (${filtered.length})</td>
+          <td colspan="4">${t('th_total')} (${filtered.length})</td><td colspan="3"></td>
           <td class="num">${fmtMoney(totInvAmt)}</td>
           <td colspan="6"></td>
         </tr>
@@ -3339,6 +3430,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       if (badgeEl) {
         badgeEl.textContent = String(anyBreachCount);
         badgeEl.style.display = anyBreachCount > 0 ? 'inline-block' : 'none';
+        badgeEl.title = currentLang === 'ar' ? `${anyBreachCount} فاتورة تسببت بتجاوز الميزانية` : `${anyBreachCount} invoices pushed spending over budget`;
+        badgeEl.setAttribute('aria-label', badgeEl.title);
       }
 
       const filtered = allInvoices.filter(r => {
@@ -3403,9 +3496,9 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             <td class="num" style="font-weight:800;">${escapeHtml(r.date)}</td>
             <td>${mNames[r.monthIndex] || '-'}</td>
             <td class="num" style="font-weight:800;">${escapeHtml(r.accountNo)}</td>
-            <td style="font-weight:700;">${escapeHtml(r.accountName)}</td>
+            <td style="font-weight:700; min-width:140px;">${escapeHtml(r.accountName)}</td>
             <td class="num">${escapeHtml(r.refNo || '-')}</td>
-            <td style="max-width:200px; white-space:normal;">${escapeHtml(r.description)}</td>
+            <td style="min-width:200px; max-width:320px; white-space:normal;">${escapeHtml(r.description)}</td>
             <td class="num" style="font-weight:800;">${fmtMoney(r.amount)}</td>
 
             <!-- Monthly Breach up to Invoice Date -->
@@ -3437,7 +3530,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       tbody.innerHTML = (html + moreRowsHtml('s5', s5Shown.length, filtered.length, 18)) || `<tr><td colspan="18" style="text-align:center; padding:24px;">-</td></tr>`;
       tfoot.innerHTML = `
         <tr>
-          <td colspan="7">${t('th_total')} (${filtered.length})</td>
+          <td colspan="4">${t('th_total')} (${filtered.length})</td><td colspan="3"></td>
           <td class="num">${fmtMoney(totInvoiceAmt)}</td>
           <td colspan="10"></td>
         </tr>
@@ -3542,7 +3635,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           <th>${t('th_acc_name')}</th>
           <th>${t('th_var_type')}</th>
           <th>${t('th_orig_b')}</th>
-          <th>9+3 Forecast</th>
+          <th>${currentLang === 'ar' ? 'توقعات 9+3' : '9+3 Forecast'}</th>
           <th>${t('th_actual_ytd')}</th>
           <th>${t('th_spend_vs_fy_pct')}</th>
           <th>${t('th_ny_prop')}</th>
@@ -3554,24 +3647,28 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       `;
 
       const accountsList = Object.values(appState.accounts).sort((a, b) => String(a.accountNo).localeCompare(String(b.accountNo)));
-      let totOrig = 0, totF93 = 0, totAct = 0, totProp = 0;
+      let totOrig = 0, totF93 = 0, totAct = 0, totProp = 0, totEac = 0;
       let html = '';
+      const nyLastClosed = getLastActualMonthIndex();
 
       accountsList.forEach(acc => {
         const orig = sumArr(acc.origMonthly);
         const f93 = sumArr(acc.f9_3Monthly);
         const act = sumArr(acc.actualMonthly);
         const prop = Number(acc.proposedNextYear) || 0;
+        // Full-year estimate (actuals for closed months + latest forecast): a like-for-like base for a 12-month proposal
+        const eacV = computeEac(acc, nyLastClosed).eac;
 
         totOrig += orig;
         totF93 += f93;
         totAct += act;
         totProp += prop;
+        totEac += eacV;
 
         const currVarPct = orig > 0 ? ((act - orig) / orig) * 100 : (act > 0 ? Infinity : 0);
         const diffPropVsOrig = prop - orig;
         const pctPropVsOrig = orig > 0 ? (diffPropVsOrig / orig) * 100 : (prop > 0 ? Infinity : 0);
-        const pctPropVsAct = act > 0 ? ((prop - act) / act) * 100 : 0;
+        const pctPropVsEac = eacV > 0 ? ((prop - eacV) / eacV) * 100 : 0;
 
         const rationale = currentLang === 'ar' ? (acc._rationaleAr || '') : (acc._rationaleEn || '');
         const isManualProp = acc.manualNextYear !== null && acc.manualNextYear !== undefined;
@@ -3582,7 +3679,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         html += `
           <tr class="${act > orig ? 'row-breach' : ''}">
             <td class="num" style="font-weight:800;">${escapeHtml(acc.accountNo)}</td>
-            <td style="font-weight:700;">${escapeHtml(acc.accountName)}</td>
+            <td style="font-weight:700; min-width:150px;">${escapeHtml(acc.accountName)}</td>
             <td>${vTypeBadge}</td>
             <td class="num">${fmtMoney(orig)}</td>
             <td class="num">${fmtMoney(f93)}</td>
@@ -3601,7 +3698,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
               ${fmtMoney(diffPropVsOrig)}
             </td>
             <td><span class="pct-badge ${pctPropVsOrig > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(pctPropVsOrig)}</span></td>
-            <td><span class="pct-badge ${pctPropVsAct > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(pctPropVsAct)}</span></td>
+            <td><span class="pct-badge ${pctPropVsEac > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(pctPropVsEac)}</span></td>
             <td style="font-size:11px; color:var(--text-muted); max-width:230px; white-space:normal;">${escapeHtml(rationale)}</td>
           </tr>
         `;
@@ -3615,7 +3712,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       tfoot.innerHTML = `
         <tr>
-          <td colspan="3">${t('th_total')}</td>
+          <td colspan="2">${t('th_total')}</td><td></td>
           <td class="num">${fmtMoney(totOrig)}</td>
           <td class="num">${fmtMoney(totF93)}</td>
           <td class="num">${fmtMoney(totAct)}</td>
@@ -3623,7 +3720,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           <td class="num" style="color:var(--primary);">${fmtMoney(totProp)}</td>
           <td class="num">${fmtMoney(totDiffOrig)}</td>
           <td><span class="pct-badge ${totPctOrig > 0 ? 'pct-over' : 'pct-under'}">${fmtPct(totPctOrig)}</span></td>
-          <td colspan="2"></td>
+          <td><span class="pct-badge ${totProp > totEac ? 'pct-over' : 'pct-under'}">${fmtPct(totEac > 0 ? ((totProp - totEac) / totEac) * 100 : 0)}</span></td>
+          <td></td>
         </tr>
       `;
     }
@@ -3791,6 +3889,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         const modeSel = document.getElementById('map-b-mode');
         modeSel.value = foundMonths >= 6 ? 'monthly' : 'annual';
         toggleBudgetMapperMode();
+        revealMapper('budget-mapper-panel');
       });
     }
 
@@ -3896,7 +3995,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
           ? `ℹ️ حسابات وردت في أكثر من صف وتم جمعها: ${merged.slice(0, 5).join('، ')}${merged.length > 5 ? '…' : ''}`
           : `ℹ️ Accounts on several rows were summed: ${merged.slice(0, 5).join(', ')}${merged.length > 5 ? '…' : ''}`);
       }
-      showToast(msg, merged.length ? 10000 : 6000);
+      showToast(msg + nextStepHint(), merged.length ? 10000 : 7000);
+      showImportProgress();
       logChange('import_budget', {
         detail: `accounts=${order.length}; rows=${rawBudgetSheetRows.length}; total=${Math.round(totalBudget * 100) / 100}; merged=${merged.join(' ') || '-'}`
       });
@@ -3918,6 +4018,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         rawExpenseSheetRows = rows;
         const cols = Object.keys(rows[0]);
         document.getElementById('exp-mapper-panel').style.display = 'block';
+        revealMapper('exp-mapper-panel');
 
         const accKw = ['account number', 'account no', 'account code', 'acc no', 'account', 'gl account', 'رقم الحساب', 'رمز الحساب', 'الحساب'];
         const accEx = ['name', 'description', 'desc', 'اسم'];
@@ -4136,14 +4237,16 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
         recomputeActualMonthlyFromGL();
 
         const fmtOrder = dateOrder === 'MDY' ? 'MM/DD' : 'DD/MM';
+        // e.g. 05/03/2026 (ambiguous) -> say which order was used; ISO dates or real date cells -> nothing to say
+        const hasNumericDates = rawExpenseSheetRows.some(r => NUMERIC_DATE_RE.test(normalizeDigits(String(r[dateCol] === undefined || r[dateCol] === null ? '' : r[dateCol])).trim()));
         // Control totals for reconciliation with the trial balance / GL report
         const ctrlTotal = Math.round(kept.reduce((s, p) => s + p.amt, 0) * 100) / 100;
         const monthTotals = new Array(12).fill(0);
         kept.forEach(p => { monthTotals[p.dObj.monthIndex] += p.amt; });
         const dupCount = Object.values(computeAnalyticalFlagsMap()).filter(f => f.includes('flag_duplicate')).length;
         let msg = isAr
-          ? `تم الاستيراد بنجاح — عدد القيود: ${kept.length} | المجموع الرقابي: ${fmtMoney(ctrlTotal)} | السنة: ${mainYear} | صيغة التواريخ: ${fmtOrder}`
-          : `Imported ${kept.length} entries | control total: ${fmtMoney(ctrlTotal)} | year ${mainYear} | date format ${fmtOrder}`;
+          ? `تم الاستيراد بنجاح — عدد القيود: ${kept.length} | المجموع الرقابي: ${fmtMoney(ctrlTotal)} | السنة: ${mainYear}${hasNumericDates ? ` | صيغة التواريخ: ${fmtOrder}` : ''}`
+          : `Imported ${kept.length} entries | control total: ${fmtMoney(ctrlTotal)} | year ${mainYear}${hasNumericDates ? ` | date format ${fmtOrder}` : ''}`;
         if (dupCount) msg += '\n' + (isAr ? `⚠️ قيود مكررة محتملة: ${dupCount} (راجع المؤشرات التحليلية)` : `⚠️ Possible duplicate entries: ${dupCount} (see analytical flags)`);
         logChange('import_gl', {
           detail: `entries=${kept.length}; total=${ctrlTotal}; year=${mainYear}; skipped_badDate=${stats.badDate}; skipped_badAmount=${stats.badAmount}; skipped_otherYear=${stats.otherYear}; duplicates=${dupCount}; by_month=` +
@@ -4228,7 +4331,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       document.getElementById('exp-mapper-panel').style.display = 'none';
       recalculateNextYearProposals(true);
       refreshAllViews();
-      showToast(msg, durationMs);
+      showToast(msg + nextStepHint(), Math.max(durationMs, 7000));
+      showImportProgress();
     }
 
     // ============================================================================
@@ -4396,6 +4500,8 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
 
       populateFilterDropdowns();
       updateUploadPills();
+      renderImportSteps();
+      renderSampleBar();
       renderDashboard();
       renderReforecastTable();
       renderGLBreachTab();
@@ -5219,7 +5325,7 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       const pos = rtl ? 'r' : 'l', x = rtl ? W - pad : pad;
       let fs = 15; while (fs > 12 && ovTextW(title, fs, true) > W - reserve) fs--;
       let s = ovTx(x, 18, pos, ovFit(title, fs, W - reserve, true), fs, OVC.ink, ' font-weight="700"');
-      s += ovTx(x, 37, pos, ovFit(sub, 12, W - 8), 12, OVC.ink2);
+      s += ovTx(x, 37, pos, ovFit(sub, 12, W - reserve), 12, OVC.ink2);
       let y = 60, cx = x;
       (legend || []).forEach(it => {
         const w = 18 + ovTextW(it.label, 12) + 16;
@@ -6169,10 +6275,203 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
       setTimeout(() => URL.revokeObjectURL(url), 4000);
     }
 
+    // ============================================================================
+    // 18. GETTING STARTED GUIDE, IMPORT STATUS & FROZEN TABLE COLUMNS
+    // ============================================================================
+    const UXS = {
+      en: {
+        steps_title: 'Get started in 3 steps',
+        steps_sub_sample: 'The tool is showing sample data so you can explore it. Your files replace it as soon as you import them, and they never leave your computer.',
+        steps_sub_user: 'Your own data is in use. Import a new file at any time to update it.',
+        s1: 'Import your budget', s2: 'Import your actual expenses', s3: 'Review the results',
+        s1_btn: 'Choose budget file', s2_btn: 'Choose expenses file', s3_btn: 'Open the dashboard', s3_btn_sample: 'See the sample dashboard',
+        st_sample: 'Sample data shown', st_waiting: 'Not imported yet',
+        st_b_done: '✓ {n} accounts · {amt}', st_e_done: '✓ {n} entries · {amt}', st_e_done_monthly: '✓ Monthly totals · {amt}',
+        st_ready: 'Ready', st_after: 'Available after steps 1 and 2',
+        tpl_lead: 'Need a starting point? Download a template:',
+        pill_waiting: 'Not imported yet', pill_b_done: 'Imported · {n} accounts', pill_e_done: 'Imported · {n} entries', pill_e_done_monthly: 'Imported · monthly totals',
+        bar_text: '<strong>You are viewing sample data.</strong> Import your own budget and expenses to replace it.',
+        bar_btn: 'Import your data',
+        next_expenses: 'Next step: import your actual expenses.', next_budget: 'Next step: import your budget.', next_review: 'Next step: open the dashboard to review the results.',
+        open_month: 'Open', not_closed: '⏳ Not closed yet'
+      },
+      ar: {
+        steps_title: 'ابدأ في ثلاث خطوات',
+        steps_sub_sample: 'الأداة تعرض الآن بيانات تجريبية لتستكشفها. ملفاتك تحل محلها بمجرد استيرادها، ولا تغادر جهازك أبداً.',
+        steps_sub_user: 'بياناتك أنت هي المعروضة الآن. يمكنك استيراد ملف جديد في أي وقت لتحديثها.',
+        s1: 'استورد ميزانيتك', s2: 'استورد مصاريفك الفعلية', s3: 'راجع النتائج',
+        s1_btn: 'اختر ملف الميزانية', s2_btn: 'اختر ملف المصاريف', s3_btn: 'افتح لوحة المؤشرات', s3_btn_sample: 'شاهد لوحة المؤشرات التجريبية',
+        st_sample: 'بيانات تجريبية معروضة', st_waiting: 'لم يُستورد بعد',
+        st_b_done: '✓ {n} حسابات · {amt}', st_e_done: '✓ {n} قيداً · {amt}', st_e_done_monthly: '✓ مجاميع شهرية · {amt}',
+        st_ready: 'جاهزة', st_after: 'متاحة بعد الخطوتين 1 و2',
+        tpl_lead: 'تحتاج نقطة بداية؟ حمّل نموذجاً جاهزاً:',
+        pill_waiting: 'لم يُستورد بعد', pill_b_done: 'تم الاستيراد · {n} حسابات', pill_e_done: 'تم الاستيراد · {n} قيداً', pill_e_done_monthly: 'تم الاستيراد · مجاميع شهرية',
+        bar_text: '<strong>أنت تشاهد بيانات تجريبية.</strong> استورد ميزانيتك ومصاريفك الفعلية لتحل محلها.',
+        bar_btn: 'استورد بياناتك',
+        next_expenses: 'الخطوة التالية: استورد مصاريفك الفعلية.', next_budget: 'الخطوة التالية: استورد ميزانيتك.', next_review: 'الخطوة التالية: افتح لوحة المؤشرات لمراجعة النتائج.',
+        open_month: 'مفتوح', not_closed: '⏳ لم يُغلق بعد'
+      }
+    };
+    function ux(k, vars) {
+      let s = (UXS[currentLang] && UXS[currentLang][k]) || UXS.en[k] || k;
+      if (vars) Object.keys(vars).forEach(v => { s = s.split('{' + v + '}').join(vars[v]); });
+      return s;
+    }
+
+    // What has been imported so far (drives the status labels and the next step)
+    function getImportState() {
+      const accs = Object.values(appState.accounts);
+      const budgetAccs = accs.filter(a => sumArr(a.origMonthly) !== 0);
+      const realTx = appState.glTransactions.filter(tx => !tx.synthetic).length;
+      const anyActual = appState.glTransactions.length > 0 || accs.some(a => sumArr(a.actualMonthly) !== 0);
+      return {
+        sample: !!appState.isReferenceModel,
+        budget: budgetAccs.length > 0, budgetN: budgetAccs.length,
+        budgetTotal: budgetAccs.reduce((s, a) => s + sumArr(a.origMonthly), 0),
+        exp: anyActual, expN: realTx, expMonthlyOnly: anyActual && realTx === 0,
+        expTotal: accs.reduce((s, a) => s + sumArr(a.actualMonthly), 0)
+      };
+    }
+    function nextStepHint() {
+      const s = getImportState();
+      if (s.sample) return '';
+      return '\n→ ' + ux(!s.budget ? 'next_budget' : !s.exp ? 'next_expenses' : 'next_review');
+    }
+
+    function renderImportSteps() {
+      const box = document.getElementById('import-steps');
+      if (!box) return;
+      const s = getImportState();
+      const next = s.sample ? 1 : (!s.budget ? 1 : !s.exp ? 2 : 3);
+      const st1 = s.sample ? ux('st_sample') : s.budget ? ux('st_b_done', { n: s.budgetN, amt: fmtMoney(s.budgetTotal) }) : ux('st_waiting');
+      const st2 = s.sample ? ux('st_sample') : s.exp
+        ? (s.expMonthlyOnly ? ux('st_e_done_monthly', { amt: fmtMoney(s.expTotal) }) : ux('st_e_done', { n: s.expN, amt: fmtMoney(s.expTotal) }))
+        : ux('st_waiting');
+      const ready = s.sample || (s.budget && s.exp);
+      const st3 = ready ? (s.sample ? ux('st_sample') : ux('st_ready')) : ux('st_after');
+      const card = (n, title, state, done, btn) => `
+        <div class="step-card${done ? ' is-done' : ''}${next === n && !done ? ' is-next' : ''}">
+          <div class="step-top"><span class="step-num">${done ? '✓' : n}</span><span>${escapeHtml(title)}</span></div>
+          <div class="step-state">${escapeHtml(state)}</div>
+          ${btn}
+        </div>`;
+      const pickBtn = (n, inputId, label) => `<button class="btn ${next === n ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="document.getElementById('${inputId}').click()">${escapeHtml(label)}</button>`;
+      const reviewBtn = `<button class="btn ${ready && !s.sample ? 'btn-primary' : 'btn-outline'} btn-sm" ${ready ? '' : 'disabled style="opacity:.55; cursor:not-allowed;"'} onclick="switchTab('tab-overview'); window.scrollTo({ top: 0, behavior: 'smooth' });">${escapeHtml(s.sample ? ux('s3_btn_sample') : ux('s3_btn'))}</button>`;
+      box.innerHTML = `
+        <div class="steps-head">
+          <div>
+            <div class="steps-title">${escapeHtml(ux('steps_title'))}</div>
+            <div class="steps-sub">${escapeHtml(ux(s.sample ? 'steps_sub_sample' : 'steps_sub_user'))}</div>
+          </div>
+        </div>
+        <div class="steps-grid">
+          ${card(1, ux('s1'), st1, !s.sample && s.budget, pickBtn(1, 'budget-file-input', ux('s1_btn')))}
+          ${card(2, ux('s2'), st2, !s.sample && s.exp, pickBtn(2, 'exp-file-input', ux('s2_btn')))}
+          ${card(3, ux('s3'), st3, false, reviewBtn)}
+        </div>
+        <div class="steps-templates">
+          <span>${escapeHtml(ux('tpl_lead'))}</span>
+          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('budget')" data-tip="tip_tpl_budget">📄 ${escapeHtml(t('tpl_budget'))}</button>
+          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('gl')" data-tip="tip_tpl_gl">📄 ${escapeHtml(t('tpl_gl'))}</button>
+          <button class="btn btn-outline btn-sm" onclick="downloadTemplate('monthly_exp')" data-tip="tip_tpl_monthly">📄 ${escapeHtml(t('tpl_monthly'))}</button>
+        </div>`;
+    }
+
+    // Sample-data notice on every tab except the import tab
+    function renderSampleBar() {
+      const bar = document.getElementById('sample-data-bar');
+      if (!bar) return;
+      const onImport = document.getElementById('tab-upload')?.classList.contains('active');
+      if (!appState.isReferenceModel || onImport) { bar.style.display = 'none'; return; }
+      bar.innerHTML = `<div>${ux('bar_text')}</div><button class="btn btn-primary btn-sm" onclick="switchTab('tab-upload'); window.scrollTo({ top: 0, behavior: 'smooth' });">${escapeHtml(ux('bar_btn'))}</button>`;
+      bar.style.display = 'flex';
+    }
+
+    // Month names as compact ranges: ["Feb","Mar","May","Jun","Jul"] -> "Feb–Mar, May–Jul"
+    function monthRangesText(names) {
+      const mN = getMonthNames();
+      const idx = names.map(n => mN.indexOf(n)).filter(i => i >= 0).sort((a, b) => a - b);
+      const parts = [];
+      for (let k = 0; k < idx.length; k++) {
+        let j = k;
+        while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
+        parts.push(j > k ? `${mN[idx[k]]}–${mN[idx[j]]}` : mN[idx[k]]);
+        k = j;
+      }
+      return parts.join(currentLang === 'ar' ? '، ' : ', ');
+    }
+
+    // Smooth scroll that stops just below the sticky tab bar
+    function scrollToEl(el) {
+      const nav = document.querySelector('.nav-bar');
+      const off = (nav ? nav.getBoundingClientRect().height : 0) + 12;
+      window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.scrollY - off), behavior: 'smooth' });
+    }
+    // After an import: show the updated guide so the next step is visible
+    function showImportProgress() {
+      const box = document.getElementById('import-steps');
+      if (box && document.getElementById('tab-upload')?.classList.contains('active')) scrollToEl(box);
+    }
+    // After choosing a file: bring the column-mapping panel into view
+    function revealMapper(panelId) {
+      const p = document.getElementById(panelId);
+      if (p) setTimeout(() => scrollToEl(p), 50);
+    }
+
+    // ---- Frozen first columns: account number and name (account tables), or sequence, date,
+    //      month and account number (invoice tables) stay in view while the table scrolls sideways
+    const FREEZE_COLS = { 'dash-table-body': 2, 'rf-table-body': 2, 'ny-table-body': 2, 'gl-breach-tbody': 4, 's5-tbody': 4 };
+    function refreshFrozenColumns() {
+      Object.keys(FREEZE_COLS).forEach(id => {
+        const tb = document.getElementById(id), table = tb && tb.closest('table');
+        if (!table || !table.offsetParent) return; // hidden tab: handled when it is shown
+        const n = FREEZE_COLS[id];
+        // Physical side from the page direction: number cells are left-to-right internally, so a logical
+        // 'start' offset would point to the wrong side in the Arabic layout
+        const side = document.documentElement.dir === 'rtl' ? 'right' : 'left';
+        table.querySelectorAll('.fz').forEach(c => { c.classList.remove('fz', 'fz-last'); c.style.left = ''; c.style.right = ''; });
+        table.classList.remove('frozen');
+        if (window.innerWidth <= 768) return; // phones: not enough width to keep columns fixed
+        const head = table.querySelector('thead tr:last-child');
+        if (!head || head.children.length < n) return;
+        table.classList.add('frozen'); // measure in the frozen layout (separate borders change widths slightly)
+        const offs = []; let o = 0;
+        for (let i = 0; i < n; i++) { offs.push(o); o += head.children[i].getBoundingClientRect().width; }
+        if (o > table.parentElement.clientWidth * 0.5) { table.classList.remove('frozen'); return; } // never freeze more than half the visible width
+        table.querySelectorAll('tr').forEach(tr => {
+          let col = 0;
+          for (const c of tr.children) {
+            const span = c.colSpan || 1;
+            if (col + span > n) break;
+            c.classList.add('fz');
+            if (col + span === n) c.classList.add('fz-last');
+            c.style[side] = offs[col] + 'px';
+            col += span;
+          }
+        });
+      });
+    }
+    let __fzPending = false;
+    function scheduleFrozenColumns() {
+      if (__fzPending) return;
+      __fzPending = true;
+      setTimeout(() => { __fzPending = false; refreshFrozenColumns(); }, 0);
+    }
+    function initFrozenColumns() {
+      const mo = new MutationObserver(scheduleFrozenColumns);
+      Object.keys(FREEZE_COLS).forEach(id => {
+        const tb = document.getElementById(id);
+        if (tb) { mo.observe(tb, { childList: true }); const head = tb.closest('table').querySelector('thead'); if (head) mo.observe(head, { childList: true }); }
+      });
+      let rt = null;
+      window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(refreshFrozenColumns, 150); });
+    }
+
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
       initFloatingTooltips();
       initOverviewInteractions();
+      initFrozenColumns();
       applyLanguageUI();
       loadSampleData();
       // Deep link to a tab, e.g. FPA_Budget_And_GL_Analyzer.html#tab-dashboard

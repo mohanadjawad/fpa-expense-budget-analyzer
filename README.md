@@ -26,7 +26,7 @@ The live demo runs entirely in your browser, exactly like the downloaded file: a
 
 1. [Download `FPA_Budget_And_GL_Analyzer.html`](https://github.com/mohanadjawad/fpa-expense-budget-analyzer/releases/latest/download/FPA_Budget_And_GL_Analyzer.html) from the [latest release](https://github.com/mohanadjawad/fpa-expense-budget-analyzer/releases/latest) (or clone this repository).
 2. Double-click it. It opens in Chrome, Edge, Firefox or Safari on Windows, macOS or Linux.
-3. Explore the built-in preview data, then upload your own budget and expenses from the **Data Import & Setup** tab. Ready-made templates are available from the same tab, and the files in [`samples/`](samples) can be uploaded directly.
+3. It opens on the **Dashboard** with sample data. When you are ready, open **Import Data** and follow the three steps on screen: import your budget, import your actual expenses, review the results. Ready-made templates are available on the same tab, and the files in [`samples/`](samples) can be uploaded directly.
 
 The interface starts in **English**; switch to **Arabic** (full right-to-left layout) with the language button at any time.
 
@@ -34,13 +34,13 @@ The interface starts in **English**; switch to **Arabic** (full right-to-left la
 
 | Tab | Purpose |
 |---|---|
-| **Data Import & Setup** | Import an expense budget (monthly columns or one annual total) and actual expenses (a full General Ledger with dates and invoice numbers, or a monthly summary). Automatic column matching for English and Arabic headers. |
+| **Import Data** | Import an expense budget (monthly columns or one annual total) and actual expenses (a full General Ledger with dates and invoice numbers, or a monthly summary). Automatic column matching for English and Arabic headers. |
 | **Dashboard** | Budget performance on one page: YTD budget, YTD actual, YTD variance, full-year forecast (EAC) and budget available after commitments; monthly spend vs budget; YTD variance by account; a budget-to-forecast bridge; budget use by department; and the material variances table. Filter by period and department, and show amounts in units, thousands, millions or billions. Each chart can be copied as an image or saved as PNG. |
-| **Account Summary & Variance %** | Per account: original budget, actual spend, open commitments (POs), net available budget, **year-to-date (YTD) variance**, **estimate at completion (EAC)**, materiality flags, variance classification and explanatory notes. |
+| **Account Summary** | Per account: original budget, actual spend, open commitments (POs), net available budget, **year-to-date (YTD) variance**, **estimate at completion (EAC)**, materiality flags, variance classification and explanatory notes. |
 | **Rolling Forecasts** | Original budget and 3+9 / 6+6 / 9+3 forecasts, with closed months locked to actuals, auto-fill helpers (run-rate, prior 3-month trend) and **approve & freeze** of a forecast version. |
-| **Monthly Budget Breach Analysis** | Month cards and a chronological invoice list showing the **first invoice that broke each monthly budget** and every invoice after it. |
-| **Annual & Monthly Over-Budget Expenses** | One row per over-budget invoice with both the monthly and the full-year cumulative excess **up to the invoice date**, plus analytical review indicators. |
-| **Next Year Budget Proposal** | Proposal per account from four methods (smart planning, 9+3 forecast, annualized run-rate, original budget) plus a growth factor, with automatic exclusion of one-off expenses and clearly labelled manual overrides. |
+| **Monthly Overruns** | Month cards and a chronological invoice list showing the **first invoice that broke each monthly budget** and every invoice after it. |
+| **Over-Budget Invoices** | One row per over-budget invoice with both the monthly and the full-year cumulative excess **up to the invoice date**, plus analytical review indicators. |
+| **Next Year Budget** | Proposal per account from four methods (smart planning, 9+3 forecast, annualized run-rate, original budget) plus a growth factor, with automatic exclusion of one-off expenses and clearly labelled manual overrides. |
 
 ![Account summary with YTD and EAC](docs/screenshots/tab-dashboard.png)
 
